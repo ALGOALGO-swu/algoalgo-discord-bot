@@ -42,10 +42,18 @@ def adduser(author, cmd):
     
     return f"[+] success adding user into db...{author}"
 
+def showuserinfo(author):
+    pass
+
 def truncate(cmd):
     args = cmd.split()
     table = args[1]
 
+    if table == "achievement":
+        return f"[!] You can't truncate table {table}"
+
+    return "testing..."
+    
     sql = f"truncate table {table};"
     
     try:

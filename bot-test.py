@@ -27,6 +27,9 @@ async def on_message(message):
     if message.content.startswith('!truncate'):
         result = algoalgo_member.truncate(message.content)
         await message.channel.send(result)
+    
+    if message.content.startswith('!showuserinfo'):
+        result = algoalgo_member
         
 
 
