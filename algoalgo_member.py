@@ -50,10 +50,10 @@ def truncate(cmd):
     table = args[1]
 
     if table == "achievement":
-        return f"[!] You can't truncate table {table}"
+        return f"[!] ERROR : You can't truncate table {table}"
 
     return "testing..."
-    
+
     sql = f"truncate table {table};"
     
     try:
