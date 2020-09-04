@@ -29,6 +29,5 @@ async def on_message(message):
         await message.channel.send(result)
         
 
-token = 'NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.9a23S3NbIEyXGq5RHNmEdwxWwnw'
-client.run(token)
-# client.run(os.environ['discord-token'])
+
+client.run(os.environ['discord-token'])
