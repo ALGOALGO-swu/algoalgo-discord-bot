@@ -52,8 +52,6 @@ def truncate(cmd):
     if table == "achievement":
         return f"[!] ERROR : You can't truncate table {table}"
 
-    return "testing..."
-
     sql = f"truncate table {table};"
     
     try:
