@@ -36,7 +36,7 @@ def adduser(author, cmd):
 
     sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
     try:
-        sql_result = sql_exe(sql, dc_id, s_id, name, bj_id, bj_solved)
+        sql_exe(sql, dc_id, s_id, name, bj_id, bj_solved)
     except Exception as ex:
         return f"[!] An error occurs while adding user({author}) into db....\n[INFO] error : {ex}"
     
@@ -55,7 +55,7 @@ def truncate(cmd):
     sql = f"truncate table {table};"
     
     try:
-        sql_result = sql_exe(sql)
+        sql_exe(sql)
     except Exception as ex:
         return f"[!] An error occurs while truncating table {table}....\n[INFO] error : {ex}"
 
