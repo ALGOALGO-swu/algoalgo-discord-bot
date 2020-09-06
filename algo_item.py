@@ -2,11 +2,13 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord.ext.commands import Bot
+import items
 
 client = commands.Bot(command_prefix='!')
 
 @client.event
 async def on_ready():
+    print("We have logged in as {0.user}".format(client))
     print("디스코드 봇 로그인이 완료되었습니다.")
     print("디스코드봇 이름:" + client.user.name)
     print("디스코드봇 ID:" + str(client.user.id))
@@ -36,5 +38,11 @@ async def on_message(message):
         await msg.add_reaction("🍺") #caffeine
         await msg.add_reaction("💊") #red bull
         await msg.add_reaction("💣") #bomb
+    if message.content.startswith('!daily_step check'):
+        result, dailyinfo = items.step_check(message.author)
+        embed = discord.Embed(title = f"{message.author}의 남은 daily_step은?", description=dailyinfo, color = 0xffffff)
+        await message.channel.send(result)
+        await message.channel.send(embed=embed)
 
 client.run('')
+
