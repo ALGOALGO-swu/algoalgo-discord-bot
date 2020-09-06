@@ -29,8 +29,11 @@ async def on_message(message):
         await message.channel.send(result)
     
     if message.content.startswith('!showuserinfo'):
-        result = algoalgo_member
+        result, userinfo = algoalgo_member.showuserinfo(message.author)
+        embed = discord.Embed(title = f"USERINFO_{message.author}", description=userinfo, color = 0xffffff)
+        await message.channel.send(result)
+        await message.channel.send(embed=embed)
         
 
-
-client.run(os.environ['discord-token'])
+client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.27592528mPcVgO4iIYRLPYcIIz4")
+#client.run(os.environ['discord-token'])
