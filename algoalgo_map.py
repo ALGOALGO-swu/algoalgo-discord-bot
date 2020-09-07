@@ -64,7 +64,7 @@ def setmap(cmd):
     ahead_to = int(args[3])
    
 
-    sql = "insert into member (id, feature, ahead_to) value (%d, %d, %d);"
+    sql = "insert into member ({id}, {feature}, {ahead_to}) value;"
     try:
         sql_update(sql, id, feature, ahead_to)
     except Exception as ex:
