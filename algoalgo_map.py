@@ -59,12 +59,12 @@ def setmap(cmd):
         return "Usage : !set_map <id> <feature> <ahead_to>"
     # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
 
-    id = int(args[1])
-    feature = int(args[2])
-    ahead_to = int(args[3])
+    id = args[1]
+    feature = args[2]
+    ahead_to = args[3]
    
 
-    sql = "insert into member ({id}, {feature}, {ahead_to}) value;"
+    sql = "insert into member (id, feature, ahead_to) value (%s, %s, %s);"
     try:
         sql_update(sql, id, feature, ahead_to)
     except Exception as ex:
