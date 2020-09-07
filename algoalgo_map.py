@@ -64,9 +64,9 @@ def setmap(cmd):
     ahead_to = args[3]
    
 
-    sql = "insert into member (id, feature, ahead_to) value (%s, %s, %s);"
+    sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
     try:
-        sql_update(sql, id, feature, ahead_to)
+        sql_update(sql, int(id), int(feature), int(ahead_to))
     except Exception as ex:
         return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
     
@@ -111,17 +111,17 @@ def getLocType(nowLoc):
     except Exception as ex:
         return f"[!] An error occurs while finding the feature of the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
     
-# 위치 이동 함수
-def shopstep(author, cmd):
-    args = cmd.split()
-    if len(args) != 4:
-        return "Usage : !shop_step <name> <student_id> <next_loc>"
-    # !shop_step <이름> <학번> <이동할 위치>
+# # 위치 이동 함수
+# def shopstep(author, cmd):
+#     args = cmd.split()
+#     if len(args) != 4:
+#         return "Usage : !shop_step <name> <student_id> <next_loc>"
+#     # !shop_step <이름> <학번> <이동할 위치>
 
-    dc_id = author
-    name = args[1]
-    s_id = args[2]
-    next_loc = args[3]
+#     dc_id = author
+#     name = args[1]
+#     s_id = args[2]
+#     next_loc = args[3]
    
 
     # sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
