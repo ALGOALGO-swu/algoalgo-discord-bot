@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import algoalgo_map
 import os
 
 client = commands.Bot(command_prefix = '-')
@@ -20,7 +21,10 @@ async def on_message(message):
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
     
-
-
+    #set map feature
+    if message.content.startswith('!set_map'):
+        result = algoalgo_map.setmap(message.content)
+        await message.channel.send(result)
+    
 
 client.run(os.environ['token_map'])
