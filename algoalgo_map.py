@@ -102,14 +102,10 @@ def getPlayers(cmd):
         sql_result = sql_exe(sql)
         print(sql_result)
         
-        players = []
-        for person in sql_result:
-            players.append(person['name'])
-
         Locinfo = f"""= the player list in the **{nowLoc}** location =\n """
 
-        for player in players:
-            Locinfo += player['name']+"\n"
+        for person in sql_result:
+            Locinfo += person['name'] +"\n"
 
         return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo
     except Exception as ex:
