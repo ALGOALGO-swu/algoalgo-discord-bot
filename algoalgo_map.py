@@ -84,18 +84,18 @@ def getLocType(cmd):
         sql_result = sql_exe(sql)
         print(sql_result)
      
-        if(sql_result[0]['feature'] == 0){
+        if sql_result[0]['feature'] == 0 :
             LocFeatureInfo = "**NOMAL**🦶"
-        }
-        if(sql_result[0]['feature'] == 1){
+        
+        if sql_result[0]['feature'] == 1 :
             LocFeatureInfo = "**LADDER**👣"
-        }        
-        if(sql_result[0]['feature'] == 2){
+
+        if sql_result[0]['feature'] == 2 :
             LocFeatureInfo = "**SNAKE**🐍"
-        }        
-        if(sql_result[0]['feature'] == 3){
+              
+        if sql_result[0]['feature'] == 3 :
             LocFeatureInfo = "**BOSS**🧟‍♀️"
-        }
+        
         
         
         return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", LocFeatureInfo, nowLoc
@@ -133,7 +133,7 @@ def showmap(author):
         print(sql_result)
      
         Locinfo = sql_result[0]['map_location']
-        
+
         return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
     except Exception as ex:
         return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
