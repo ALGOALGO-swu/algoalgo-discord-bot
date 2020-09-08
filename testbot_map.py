@@ -20,8 +20,8 @@ async def on_message(message):
     #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
-        result, Locinfo = algoalgo_map.showmap(message.content)
-        embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo, color = 0x5468B6)
+        result, Locinfo = algoalgo_map.showmap(message.author)
+        embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
     
@@ -33,14 +33,14 @@ async def on_message(message):
     #test :: getLocType
     if message.content.startswith('!getLocType'):
         result, LocFeatureInfo, nowLoc = algoalgo_map.getLocType(message.content)
-        embed = discord.Embed(title = f"""== the feature of the **{nowLoc}** location ==""", description=LocFeatureInfo, color = 0x5468B6)
+        embed = discord.Embed(title = f"""== the feature of the **{nowLoc}** location ==""", description=LocFeatureInfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 
     #test :: getPlayers
     if message.content.startswith('!getPlayers'):
         result , Locinfo, nowLoc = algoalgo_map.getPlayers(message.content)
-        embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x5468B6)
+        embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
     
