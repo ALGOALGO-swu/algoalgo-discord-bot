@@ -74,7 +74,7 @@ def setmap(cmd):
 
 # nowLoc의 속성 반환
 def getLocType(nowLoc):
-    sql = f"select feature from map where id='{nowLoc}''"
+    sql = f"select feature from map where id='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
@@ -90,7 +90,7 @@ def getLocType(nowLoc):
 
 # nowLoc에 있는 플레이어들의 이름 출력
 def getPlayers(nowLoc):
-    sql = f"select name from member where map_location='{nowLoc}''"
+    sql = f"select name from member where map_location='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
@@ -113,7 +113,7 @@ def getPlayers(nowLoc):
 
 # player's loc 반환
 def showmap(author):
-    sql = f"select map_location from member where discord_id='{str(author)}''"
+    sql = f"select map_location from member where discord_id='{str(author)}'"
 
     try:
         sql_result = sql_exe(sql)
