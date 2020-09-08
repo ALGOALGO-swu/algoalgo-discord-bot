@@ -73,15 +73,18 @@ def setmap(cmd):
     return f"[+] success adding map data into db..."
 
 # nowLoc의 속성 반환
-def getLocType(nowLoc):
-    sql = f"select feature from map where id='{nowLoc}'"
+def getLocType(cmd):
+    args = cmd.split()
+    nowLoc = args[1]
+
+    sql = f"select * from map where id='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
         print(sql_result)
      
         Locinfo = f"""
-        the feature of the {nowLoc} location : {sql_result}
+        the feature of the {nowLoc} location : {sql_result[0]['feature']}
         """ 
         return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", Locinfo
     except Exception as ex:
@@ -89,7 +92,10 @@ def getLocType(nowLoc):
     
 
 # nowLoc에 있는 플레이어들의 이름 출력
-def getPlayers(nowLoc):
+def getPlayers(cmd):
+    args = cmd.split()
+    nowLoc = args[1]
+    
     sql = f"select name from member where map_location='{nowLoc}'"
 
     try:

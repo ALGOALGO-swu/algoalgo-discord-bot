@@ -20,8 +20,10 @@ async def on_message(message):
     #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
-        result = algoalgo_map.showmap(message.content)
+        result, Locinfo = algoalgo_map.showmap(message.author)
+        embed = discord.Embed(title = f"LOCINFO_{message.author}", description=Locinfo, color = 0xffffff)
         await message.channel.send(result)
+        await message.channel.send(embed=embed)
     
     #set map feature
     if message.content.startswith('!set_map'):
@@ -30,13 +32,15 @@ async def on_message(message):
 
     #test :: getLocType
     if message.content.startswith('!getLocType'):
-        result = algoalgo_map.getLocType(message.content)
+        result = algoalgo_map.getLocType(message.nowLoc)
         await message.channel.send(result)
 
-    #test :: getLocType
+    #test :: getPlayers
     if message.content.startswith('!getPlayers'):
-        result = algoalgo_map.getPlayers(message.content)
+        result , Locinfo = algoalgo_map.getPlayers(message.nowLoc)
+        embed = discord.Embed(title = f"LOCINFO_{message.author}", description=Locinfo, color = 0xffffff)
         await message.channel.send(result)
+        await message.channel.send(embed=embed)
     
 
 client.run(os.environ['token_map'])
