@@ -111,6 +111,25 @@ def getPlayers(nowLoc):
         return f"[!] An error occurs while finding the users in the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
     
 
+# player's loc 반환
+def showmap(author):
+    sql = f"select map_location from member where discord_id='{str(author)}''"
+
+    try:
+        sql_result = sql_exe(sql)
+        print(sql_result)
+     
+        Locinfo = f"""
+        *{author}*'s location : {sql_result}
+        """ 
+        return f"[*] Successfully Inquires data about *{author}*'s location on the map", Locinfo
+    except Exception as ex:
+        return f"[!] An error occurs while finding *{author}*'s location on the map in db....\n[INFO] error : {ex}"
+   
+
+
+
+
 # # 위치 이동 함수
 # def shopstep(author, cmd):
 #     args = cmd.split()

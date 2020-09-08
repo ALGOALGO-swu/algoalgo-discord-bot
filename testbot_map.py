@@ -20,6 +20,8 @@ async def on_message(message):
     #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
+        result = algoalgo_map.showmap(message.content)
+        await message.channel.send(result)
     
     #set map feature
     if message.content.startswith('!set_map'):
