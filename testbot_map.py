@@ -32,12 +32,12 @@ async def on_message(message):
 
     #test :: getLocType
     if message.content.startswith('!getLocType'):
-        result = algoalgo_map.getLocType(message.nowLoc)
+        result = algoalgo_map.getLocType(message.content)
         await message.channel.send(result)
 
     #test :: getPlayers
     if message.content.startswith('!getPlayers'):
-        result , Locinfo = algoalgo_map.getPlayers(message.nowLoc)
+        result , Locinfo = algoalgo_map.getPlayers(message.content)
         embed = discord.Embed(title = f"LOCINFO_{message.author}", description=Locinfo, color = 0xffffff)
         await message.channel.send(result)
         await message.channel.send(embed=embed)

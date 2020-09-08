@@ -95,7 +95,7 @@ def getLocType(cmd):
 def getPlayers(cmd):
     args = cmd.split()
     nowLoc = args[1]
-    
+
     sql = f"select name from member where map_location='{nowLoc}'"
 
     try:
@@ -126,11 +126,11 @@ def showmap(author):
         print(sql_result)
      
         Locinfo = f"""
-        *{author}*'s location : {sql_result}
+        **{author}** 's location : {sql_result}
         """ 
-        return f"[*] Successfully Inquires data about *{author}*'s location on the map", Locinfo
+        return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
     except Exception as ex:
-        return f"[!] An error occurs while finding *{author}*'s location on the map in db....\n[INFO] error : {ex}"
+        return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
    
 
 
