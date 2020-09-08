@@ -17,13 +17,23 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    #show map feature
+    #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
     
     #set map feature
     if message.content.startswith('!set_map'):
         result = algoalgo_map.setmap(message.content)
+        await message.channel.send(result)
+
+    #test :: getLocType
+    if message.content.startswith('!getLocType'):
+        result = algoalgo_map.getLocType(message.content)
+        await message.channel.send(result)
+
+    #test :: getLocType
+    if message.content.startswith('!getPlayers'):
+        result = algoalgo_map.getPlayers(message.content)
         await message.channel.send(result)
     
 

@@ -72,7 +72,21 @@ def setmap(cmd):
     
     return f"[+] success adding map data into db..."
 
+# nowLoc의 속성 반환
+def getLocType(nowLoc):
+    sql = f"select feature from map where id='{nowLoc}''"
 
+    try:
+        sql_result = sql_exe(sql)
+        print(sql_result)
+     
+        Locinfo = f"""
+        the feature of the {nowLoc} location : {sql_result}
+        """ 
+        return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", Locinfo
+    except Exception as ex:
+        return f"[!] An error occurs while finding the feature of the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
+    
 
 # nowLoc에 있는 플레이어들의 이름 출력
 def getPlayers(nowLoc):
@@ -96,21 +110,7 @@ def getPlayers(nowLoc):
     except Exception as ex:
         return f"[!] An error occurs while finding the users in the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
     
-# nowLoc의 속성 반환
-def getLocType(nowLoc):
-    sql = f"select feature from map where id='{nowLoc}''"
 
-    try:
-        sql_result = sql_exe(sql)
-        print(sql_result)
-     
-        Locinfo = f"""
-        the feature of the {nowLoc} location : {sql_result}
-        """ 
-        return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", Locinfo
-    except Exception as ex:
-        return f"[!] An error occurs while finding the feature of the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
-    
 # # 위치 이동 함수
 # def shopstep(author, cmd):
 #     args = cmd.split()
