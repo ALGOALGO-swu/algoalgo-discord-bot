@@ -73,6 +73,7 @@ def setmap(cmd):
     return f"[+] success adding map data into db..."
 
 # nowLoc의 속성 반환
+#<normal: 0, ladder: 1, snake: 2, boss: 3> 
 def getLocType(cmd):
     args = cmd.split()
     nowLoc = args[1]
@@ -83,10 +84,21 @@ def getLocType(cmd):
         sql_result = sql_exe(sql)
         print(sql_result)
      
-        Locinfo = f"""
-        the feature of the {nowLoc} location : {sql_result[0]['feature']}
-        """ 
-        return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", Locinfo
+        if(sql_result[0]['feature'] == 0){
+            LocFeatureInfo = "**NOMAL**🦶"
+        }
+        if(sql_result[0]['feature'] == 1){
+            LocFeatureInfo = "**LADDER**👣"
+        }        
+        if(sql_result[0]['feature'] == 2){
+            LocFeatureInfo = "**SNAKE**🐍"
+        }        
+        if(sql_result[0]['feature'] == 3){
+            LocFeatureInfo = "**BOSS**🧟‍♀️"
+        }
+        
+        
+        return f"[*] Successfully Inquires data about the feature of the {nowLoc} location on the map", LocFeatureInfo, nowLoc
     except Exception as ex:
         return f"[!] An error occurs while finding the feature of the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
     
@@ -102,12 +114,12 @@ def getPlayers(cmd):
         sql_result = sql_exe(sql)
         print(sql_result)
         
-        Locinfo = f"""= the player list in the **{nowLoc}** location =\n """
+        Locinfo = ""
 
         for person in sql_result:
             Locinfo += person['name'] +"\n"
 
-        return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo
+        return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo , nowLoc
     except Exception as ex:
         return f"[!] An error occurs while finding the users in the {nowLoc} location on the map in db....\n[INFO] error : {ex}"
     
@@ -120,9 +132,8 @@ def showmap(author):
         sql_result = sql_exe(sql)
         print(sql_result)
      
-        Locinfo = f"""
-        **{author}** 's location : {sql_result}
-        """ 
+        Locinfo = sql_result[0]['map_location']
+        
         return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
     except Exception as ex:
         return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
