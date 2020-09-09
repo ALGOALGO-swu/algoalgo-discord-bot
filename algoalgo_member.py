@@ -76,8 +76,7 @@ def showuserinfo(author):
         
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
-        userinfo = f"""
-        discord_id : {sql_result[0]['discord_id']}
+        userinfo = f"""discord_id : {sql_result[0]['discord_id']}
         name : {sql_result[0]['name']}
         **- GAME INFO**
         status : {sql_result[0]['status']}

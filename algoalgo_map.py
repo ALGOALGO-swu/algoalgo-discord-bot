@@ -3,7 +3,7 @@ import pymysql
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd='os.environ['db_pass']', 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
