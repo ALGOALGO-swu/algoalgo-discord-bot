@@ -1,6 +1,3 @@
-django
-gunicorn
-django-heroku
-discord
+discord.py
 asyncio
 pymysql
