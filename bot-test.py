@@ -33,6 +33,5 @@ async def on_message(message):
         embed = discord.Embed(title = f"USERINFO_{message.author}", description=userinfo, color = 0xffffff)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
-        
 
 client.run(os.environ['discord-token'])
