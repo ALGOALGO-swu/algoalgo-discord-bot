@@ -3,7 +3,7 @@ import pymysql
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd='', 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -25,11 +25,11 @@ def sql_update(query, *args):
 def sql_exe(query):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd='', 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
-    )   
+    )
 
     cursor = db_conn.cursor(pymysql.cursors.DictCursor)
     try:
@@ -45,38 +45,54 @@ def sql_exe(query):
     except Exception as ex:
         raise ex
 
-def step_check(author):
+pointinfo=""
+def point_check(author):
     sql = f"select * from member where discord_id='{str(author)}'"
     try:
         sql_result = sql_exe(sql)
-        print(sql_result)
-        dailyinfo = f"""
-        오늘 남은 steps : {sql_result[0]['daily_steps']}
-        남은 member point : {sql_result[0]['point']}
-        """
-        return f"{author}의 daily_stops check 성공", dailyinfo
+        pointinfo = f"""{sql_result[0]['point']}"""
+        return f"[*] Successfully Inquires data about the feature of the {author}'s point'", pointinfo
     except Exception as ex:
-        return f"error!\n[무슨에러?]: {ex}"
+        return f"[!] point check error!\n[INFO]: {ex}"
+
+def setpoint(author):
+    sql = f"update member set point = 10 where discord_id='{str(author)}'"
+    try:
+        sql_exe(sql)
+        return f"[*] 테스트용 10 포인트세팅"
+    except Exception as ex:
+        return f"[!] setpoint error!\n[INFO]: {ex}"
 
 ITEMS = ["STEP", "REDEMPTION", "SNAKE", "ASSASSIN", "STUN", "CAFFEINE", "REDBULL", "BOMB"]
+PRICE = [3, 5, 10, 6, 6, 3, 5, 6]
 def buy_item(author, cmd): #!buy_item <아이템> <개수>
     args = cmd.split()
     if len(args) != 3:
-        return "!buyitem <아이템> <개수> 형식에 맞춰주세요"
-
+        return "Usage: !buyitem <item name> <number>"
+    
     item = args[1]
-    cnt = args[2]
+    cnt = int(args[2])
+    item_price = int(PRICE[ITEMS.index(item)])*cnt
+
+    sql = f"select * from member where discord_id='{str(author)}'"
+    sql_result = sql_exe(sql)
+    pointinfo = f"""{sql_result[0]['point']}"""
 
     if item not in ITEMS:
-        return "아이템 이름을 똑바로 입력해 주세요"
+        return "Please enter the item name correctly"
+    
+    if item_price > int(pointinfo):
+        return "You don't have enough points"
     
     gogo=''
-    for i in range(int(cnt)):
+    for i in range(cnt):
         gogo+=item+';'
-
-    sql = f"update member set items = (%s) where discord_id='{str(author)}'"
+    
+    sql = f"update member set items = CONCAT(items, (%s)) where discord_id='{str(author)}'"
+    sql2 = f"update member set point = point-{item_price} where discord_id='{str(author)}'"
     try:
         sql_update(sql, gogo)
+        sql_exe(sql2)
     except Exception as ex:
-        return f"error!\n[무슨에러?]: {ex}"
-    return f"{author}의 {item} 아이템 {cnt}개 구매 완료"
+        return f"[!] buy item error!\n[INFO]: {ex}"
+    return f"[+] success updating item into db: {author}\n구매 성공! {item_price} 포인트 차감되었습니다"
