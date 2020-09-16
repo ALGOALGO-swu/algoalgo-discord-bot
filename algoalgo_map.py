@@ -109,7 +109,7 @@ def getPlayers(cmd):
     args = cmd.split()
     nowLoc = args[1]
 
-    sql = f"select name from member where map_location='{nowLoc}'"
+    sql = f"select discord_id from member where map_location='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
