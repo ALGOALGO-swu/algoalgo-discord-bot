@@ -46,18 +46,6 @@ def sql_exe(query):
     except Exception as ex:
         raise ex
 
-#관리자 확인 함수
-def ownerPermissionChk(**perms):
-    original = commands.has_permissions(**perms).predicate
-    async def extended_check(ctx):
-        if ctx.guild is None:
-            return False
-        return ctx.guild.owner_id == ctx.author.id or await original(ctx)
-    return commands.check(extended_check)
-
-
-
-
 #     getPlayers() #해당 칸에 위치한 플레이어 
 #     getItems()  #해당 칸에 위치한 아이템
 #     getFloorType() #해당 칸이 어떤 칸인지. 문제 칸 or 사다리 or 뱀
