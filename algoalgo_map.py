@@ -46,6 +46,18 @@ def sql_exe(query):
     except Exception as ex:
         raise ex
 
+#관리자 확인 함수
+def ownerPermissionChk(**perms):
+    original = commands.has_permissions(**perms).predicate
+    async def extended_check(ctx):
+        if ctx.guild is None:
+            return False
+        return ctx.guild.owner_id == ctx.author.id or await original(ctx)
+    return commands.check(extended_check)
+
+
+
+
 #     getPlayers() #해당 칸에 위치한 플레이어 
 #     getItems()  #해당 칸에 위치한 아이템
 #     getFloorType() #해당 칸이 어떤 칸인지. 문제 칸 or 사다리 or 뱀
@@ -54,24 +66,29 @@ def sql_exe(query):
 # ahead_to : 사다리나 뱀일 경우 이동할 칸의 번호 
 
 # 맵 설정
-def setmap(cmd):
-    args = cmd.split()
-    if len(args) != 4:
-        return "Usage : !set_map <id> <feature> <ahead_to>"
-    # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
+def setmap(cmd, author, ctx):
+    if ctx.guild.owner_id == ctx.author.id:
+        args = cmd.split()
+        if len(args) != 4:
+            return "Usage : !set_map <id> <feature> <ahead_to>"
+        # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
 
-    id = args[1]
-    feature = args[2]
-    ahead_to = args[3]
-   
-
-    sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
-    try:
-        sql_update(sql, int(id), int(feature), int(ahead_to))
-    except Exception as ex:
-        return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
+        id = args[1]
+        feature = args[2]
+        ahead_to = args[3]
     
-    return f"[+] success adding map data into db..."
+
+        sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
+        try:
+            sql_update(sql, int(id), int(feature), int(ahead_to))
+        except Exception as ex:
+            return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
+        
+        return f"[+] success adding map data into db..."
+    else:
+        return f"[*] the permission required."
+
+    
 
 # nowLoc의 속성 반환
 #<normal: 0, ladder: 1, snake: 2, boss: 3> 

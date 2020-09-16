@@ -12,7 +12,7 @@ async def on_ready():
     print("봇 이름:",client.user.name,"봇 아이디:",client.user.id,"봇 버전:",discord.__version__)
 
 @client.event
-async def on_message(message):
+async def on_message(message, ctx):
     # if this message is sent by bot itself, do nothing.
     if message.author == client.user:
         return
@@ -27,7 +27,7 @@ async def on_message(message):
     
     #set map feature
     if message.content.startswith('!set_map'):
-        result = algoalgo_map.setmap(message.content)
+        result = algoalgo_map.setmap(message.content, message.author, ctx)
         await message.channel.send(result)
 
     #test :: getLocType
