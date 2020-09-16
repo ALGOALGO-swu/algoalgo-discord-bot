@@ -118,7 +118,7 @@ def getPlayers(cmd):
         Locinfo = ""
 
         for person in sql_result:
-            Locinfo += person['name'] +"\n"
+            Locinfo += person['discord_id'] +"\n"
 
         return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo , nowLoc
     except Exception as ex:
