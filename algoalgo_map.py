@@ -54,23 +54,24 @@ def sql_exe(query):
 # ahead_to : 사다리나 뱀일 경우 이동할 칸의 번호 
 
 # 맵 설정
-def setmap(cmd, author, ctx):
-    if ctx.guild.owner_id == ctx.author.id:
-        args = cmd.split()
-        if len(args) != 4:
-            return "Usage : !set_map <id> <feature> <ahead_to>"
-        # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
+def setmap(cmd, author, admin, ctx):
+    # if ctx.guild.roles == ctx.author.id:
+    if admin in ctx.author.roles:
+        # args = cmd.split()
+        # if len(args) != 4:
+        #     return "Usage : !set_map <id> <feature> <ahead_to>"
+        # # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
 
-        id = args[1]
-        feature = args[2]
-        ahead_to = args[3]
+        # id = args[1]
+        # feature = args[2]
+        # ahead_to = args[3]
     
 
-        sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
-        try:
-            sql_update(sql, int(id), int(feature), int(ahead_to))
-        except Exception as ex:
-            return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
+        # sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
+        # try:
+        #     sql_update(sql, int(id), int(feature), int(ahead_to))
+        # except Exception as ex:
+        #     return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
         
         return f"[+] success adding map data into db..."
     else:
