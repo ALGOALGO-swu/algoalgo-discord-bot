@@ -54,9 +54,8 @@ def sql_exe(query):
 # ahead_to : 사다리나 뱀일 경우 이동할 칸의 번호 
 
 # 맵 설정
-def setmap(cmd, author, admin, ctx):
-    # if ctx.guild.roles == ctx.author.id:
-    if admin in ctx.author.roles:
+def setmap(cmd, author):
+    # if admin in ctx.author.roles:
         # args = cmd.split()
         # if len(args) != 4:
         #     return "Usage : !set_map <id> <feature> <ahead_to>"
@@ -73,9 +72,9 @@ def setmap(cmd, author, admin, ctx):
         # except Exception as ex:
         #     return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
         
-        return f"[+] success adding map data into db..."
-    else:
-        return f"[*] the permission required."
+    return f"[+] success adding map data into db..."
+    # else:
+    #     return f"[*] the permission required."
 
     
 
