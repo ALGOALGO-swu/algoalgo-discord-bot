@@ -109,7 +109,7 @@ def getPlayers(cmd):
     args = cmd.split()
     nowLoc = args[1]
 
-    sql = f"select discord_id from member where map_location='{nowLoc}'"
+    sql = f"select * from member where map_location='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
@@ -118,8 +118,7 @@ def getPlayers(cmd):
         Locinfo = ""
 
         for person in sql_result:
-            Locinfo += person
-            # Locinfo += person['discord_id'] +"\n"
+            Locinfo += person['discord_id'] +"\n"
 
         return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo , nowLoc
     except Exception as ex:
