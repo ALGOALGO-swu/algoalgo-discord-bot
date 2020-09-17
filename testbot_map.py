@@ -12,7 +12,7 @@ async def on_ready():
     print("봇 이름:",client.user.name,"봇 아이디:",client.user.id,"봇 버전:",discord.__version__)
 
 @client.event
-async def on_message(message, ctx):
+async def on_message(message):
     # if this message is sent by bot itself, do nothing.
     if message.author == client.user:
         return
@@ -25,12 +25,10 @@ async def on_message(message, ctx):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
     
-    # #set map feature
-    # if message.content.startswith('!set_map'):
-    #     admin = discord.utils.get(ctx.guild.roles, name="관리자")
-    #     # db_admin = discord.utils.get(ctx.guild.roles, name="db_admin")  
-    #     result = algoalgo_map.setmap(message.content, message.author, admin, ctx)
-    #     await message.channel.send(result)
+    #set map feature
+    if message.content.startswith('!set_map'):
+        result = algoalgo_map.setmap(message.content)
+        await message.channel.send(result)
 
     #test :: getLocType
     if message.content.startswith('!getLocType'):
@@ -46,16 +44,5 @@ async def on_message(message, ctx):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
     
-@client.event 
-# roles
-@commands.has_role('db_admin')
-async def on_admin_message(message):
-     #set map feature
-    if message.content.startswith('!set_map'):
-        # admin = discord.utils.get(ctx.guild.roles, name="관리자")
-        # db_admin = discord.utils.get(ctx.guild.roles, name="db_admin")  
-        result = algoalgo_map.setmap(message.content, message.author)
-        await message.channel.send(result)
-
 
 client.run(os.environ['token_map'])

@@ -1,11 +1,10 @@
 import pymysql
-
-# select * -> 
+import os
 
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd=os.environ['db_pass'], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -27,7 +26,7 @@ def sql_update(query, *args):
 def sql_exe(query):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd=os.environ['db_pass'], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -76,8 +75,7 @@ def showuserinfo(author):
         
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
-        userinfo = f"""
-        discord_id : {sql_result[0]['discord_id']}
+        userinfo = f"""discord_id : {sql_result[0]['discord_id']}
         name : {sql_result[0]['name']}
         **- GAME INFO**
         status : {sql_result[0]['status']}
@@ -89,9 +87,11 @@ def showuserinfo(author):
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
         """ 
+        print(userinfo)
+        print("Sdddddddddddddd")
         return f"[*] Successfully Inquires data about {author}", userinfo
     except Exception as ex:
-        return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}"
+        return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}", None
     
 
 

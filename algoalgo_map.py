@@ -54,29 +54,24 @@ def sql_exe(query):
 # ahead_to : 사다리나 뱀일 경우 이동할 칸의 번호 
 
 # 맵 설정
-def setmap(cmd, author):
-    # if admin in ctx.author.roles:
-        # args = cmd.split()
-        # if len(args) != 4:
-        #     return "Usage : !set_map <id> <feature> <ahead_to>"
-        # # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
+def setmap(cmd):
+    args = cmd.split()
+    if len(args) != 4:
+        return "Usage : !set_map <id> <feature> <ahead_to>"
+    # !set_map <칸 순서> <normal: 0, ladder: 1, snake: 2, boss: 3> <이동할 위치>
 
-        # id = args[1]
-        # feature = args[2]
-        # ahead_to = args[3]
+    id = args[1]
+    feature = args[2]
+    ahead_to = args[3]
+   
+
+    sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
+    try:
+        sql_update(sql, int(id), int(feature), int(ahead_to))
+    except Exception as ex:
+        return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
     
-
-        # sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
-        # try:
-        #     sql_update(sql, int(id), int(feature), int(ahead_to))
-        # except Exception as ex:
-        #     return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
-        
     return f"[+] success adding map data into db..."
-    # else:
-    #     return f"[*] the permission required."
-
-    
 
 # nowLoc의 속성 반환
 #<normal: 0, ladder: 1, snake: 2, boss: 3> 
@@ -114,7 +109,7 @@ def getPlayers(cmd):
     args = cmd.split()
     nowLoc = args[1]
 
-    sql = f"select discord_id from member where map_location='{nowLoc}'"
+    sql = f"select name from member where map_location='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
@@ -123,7 +118,7 @@ def getPlayers(cmd):
         Locinfo = ""
 
         for person in sql_result:
-            Locinfo += person['discord_id'] +"\n"
+            Locinfo += person['name'] +"\n"
 
         return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo , nowLoc
     except Exception as ex:
@@ -168,5 +163,3 @@ def showmap(author):
     #     return f"[!] An error occurs while adding user({author}) into db....\n[INFO] error : {ex}"
     
     # return f"[+] success adding user into db...{author}"
-
-
