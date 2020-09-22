@@ -1,9 +1,10 @@
 import pymysql
+import os
 
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='os.environ['db_pass']', 
+        passwd=os.environ["db"], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -25,7 +26,7 @@ def sql_update(query, *args):
 def sql_exe(query):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd='algoalgo-staff', 
+        passwd=os.environ["db"], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -162,5 +163,3 @@ def showmap(author):
     #     return f"[!] An error occurs while adding user({author}) into db....\n[INFO] error : {ex}"
     
     # return f"[+] success adding user into db...{author}"
-
-
