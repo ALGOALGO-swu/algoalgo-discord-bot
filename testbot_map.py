@@ -28,28 +28,30 @@ async def on_message(message):
     
     #admin :: set map feature
     if message.content.startswith('!set_map'):
-        result = f"[*] the adming permission required."
+        result = f"[*] the admin permission required."
         if message.author.top_role.id == admin:
             result = algoalgo_map.setmap(message.content)
         await message.channel.send(result)
 
     #admin :: getLocType
     if message.content.startswith('!getLocType'):
-        result = f"[*] the adming permission required."
+        result = f"""[*] the admin permission required."""
+        embed = f"""your role :: {message.author.top_role.name}"""
         if message.author.top_role.id == admin:
             result, LocFeatureInfo, nowLoc = algoalgo_map.getLocType(message.content)
             embed = discord.Embed(title = f"""== the feature of the **{nowLoc}** location ==""", description=LocFeatureInfo, color = 0x6b9560)
         await message.channel.send(result)
-        await message.channel.send(embed=embed)
+        await message.channel.send(embed)
 
     #admin :: getPlayers
     if message.content.startswith('!getPlayers'):
-        result = f"[*] the adming permission required."
+        result = f"""[*] the admin permission required."""
+        embed = f"""your role :: {message.author.top_role.name}"""
         if message.author.top_role.id == admin:
             result , Locinfo, nowLoc = algoalgo_map.getPlayers(message.content)
             embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
-        await message.channel.send(embed=embed)
+        await message.channel.send(embed)
         
     #admin ::  printing top_role id 
     if message.content.startswith('!role_id'):
