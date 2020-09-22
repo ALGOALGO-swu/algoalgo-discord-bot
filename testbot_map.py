@@ -36,7 +36,7 @@ async def on_message(message):
     #admin :: getLocType
     if message.content.startswith('!getLocType'):
         result = f"""[*] the admin permission required."""
-        embed = discord.Embed(title = f"""[*] the admin permission required.""", description=f"""your role :: {message.author.top_role.name}""", color = 0x6b9560)
+        embed = discord.Embed(title = f"""[*] the admin permission required.""", description=f"""your role :: {message.author.top_role.name}""", color = 0x00aaaa)
         if message.author.top_role.id == admin:
             result, LocFeatureInfo, nowLoc = algoalgo_map.getLocType(message.content)
             embed = discord.Embed(title = f"""== the feature of the **{nowLoc}** location ==""", description=LocFeatureInfo, color = 0x6b9560)
@@ -46,15 +46,21 @@ async def on_message(message):
     #admin :: getPlayers
     if message.content.startswith('!getPlayers'):
         result = f"""[*] the admin permission required."""
-        embed = discord.Embed(title = f"""[*] the admin permission required.""", description=f"""your role :: {message.author.top_role.name}""", color = 0x6b9560)
+        embed = discord.Embed(title = f"""[*] the admin permission required.""", description=f"""your role :: {message.author.top_role.name}""", color = 0x00aaaa)
         if message.author.top_role.id == admin:
             result , Locinfo, nowLoc = algoalgo_map.getPlayers(message.content)
             embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
         
-    #admin ::  printing top_role id 
+    #admin ::  printing the highest role 
     if message.content.startswith('!role_id'):
         await message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the highest role INFO ==""", description = f""" the highest role :: {message.author.top_role.name}\n the highest role id :: {message.author.top_role.id} """, color = 0x6b9560))
-        
+
+
+    #admin ::  printing all_role id 
+    if message.content.startswith('!role_id_all'):
+        for i in range(len(message.author.roles)):
+            message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the highest role INFO ==""", description = f""" the highest role :: {message.author.role[i].name}\n the highest role id :: {message.author.role[i].id} """, color = 0x6b9560))
+         
 client.run(os.environ['token_map'])
