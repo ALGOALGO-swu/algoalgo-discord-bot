@@ -30,12 +30,10 @@ async def on_message(message):
         result = algoalgo_map.setmap(message.content)
         await message.channel.send(result)
     
-    # 역할 id 반환
-    if message.content.startswith('!role_id'):
-        for i in range(len(message.guild.roles)):
-            Ridlist = ""
-            Ridlist += message.guild.roles[i].id
-        await message.channel.send(Ridlist)
+
+    if message.guild.roles[-1] == message.author.roles[-1]:
+        await message.channel.send(embed=discord.Embed(title="권한 info", description = message.author + "님의 권한은" + message.author.roles[0], color = 0xff0000))
+ 
 
 
     # if message.content.startswith('!set_map'):
