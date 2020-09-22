@@ -67,8 +67,13 @@ async def on_message(message):
         result , Locinfo, nowLoc = algoalgo_map.getPlayers(message.content)
         embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
-        # await message.channel.send(embed=embed)
-        await message.channel.send(embed=discord.Embed(title="권한 info", description = f"""== 님의 권한은 {message.author.roles[0].mention} ==""", color = 0xff0000))
-    
-
+        await message.channel.send(embed=embed)
+        
+    # printing role id 
+    if message.content.startswith('!role_id'):
+        RList = ""
+        for i in range(len(message.guild.roles)):
+            RList += message.author.roles[i].mention
+        await message.channel.send(embed=discord.Embed(title="권한 info", description = f"""== {message.author}님의 권한은 {RList} ==""", color = 0xff0000))
+        
 client.run(os.environ['token_map'])
