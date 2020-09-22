@@ -6,8 +6,6 @@ import os
 
 client = commands.Bot(command_prefix = '-')
 
-# roles
-@commands.has_any_role('db_admin', 'db_admin')
 
 @client.event 
 async def on_ready():
