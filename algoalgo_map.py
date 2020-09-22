@@ -63,15 +63,15 @@ def setmap(cmd):
     id = args[1]
     feature = args[2]
     ahead_to = args[3]
-    sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
+   
 
+    sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
     try:
         sql_update(sql, int(id), int(feature), int(ahead_to))
     except Exception as ex:
         return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
     
     return f"[+] success adding map data into db..."
-
 
 # nowLoc의 속성 반환
 #<normal: 0, ladder: 1, snake: 2, boss: 3> 
@@ -109,7 +109,7 @@ def getPlayers(cmd):
     args = cmd.split()
     nowLoc = args[1]
 
-    sql = f"select * from member where map_location='{nowLoc}'"
+    sql = f"select name from member where map_location='{nowLoc}'"
 
     try:
         sql_result = sql_exe(sql)
@@ -118,7 +118,7 @@ def getPlayers(cmd):
         Locinfo = ""
 
         for person in sql_result:
-            Locinfo += person['discord_id'] +"\n"
+            Locinfo += person['name'] +"\n"
 
         return f"[*] Successfully Inquires data about the users in the {nowLoc} location on the map", Locinfo , nowLoc
     except Exception as ex:

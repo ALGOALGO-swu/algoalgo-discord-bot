@@ -1,11 +1,9 @@
 import discord
 from discord.ext import commands
-from discord.utils import get
 import algoalgo_map
 import os
 
 client = commands.Bot(command_prefix = '-')
-
 
 @client.event 
 async def on_ready():
@@ -14,7 +12,7 @@ async def on_ready():
     print("봇 이름:",client.user.name,"봇 아이디:",client.user.id,"봇 버전:",discord.__version__)
 
 @client.event
-async def on_message(message, ctx):
+async def on_message(message):
     # if this message is sent by bot itself, do nothing.
     if message.author == client.user:
         return
@@ -27,7 +25,19 @@ async def on_message(message, ctx):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
     
-    # #set map feature
+    #set map feature
+    if message.content.startswith('!set_map'):
+        result = algoalgo_map.setmap(message.content)
+        await message.channel.send(result)
+    
+    # 역할 id 반환
+    if message.content.startswith('!role_id'):
+        for i in range(len(message.guild.roles)):
+            Ridlist = ""
+            Ridlist += message.guild.roles[i].id
+            await message.channel.send(Ridlist)
+
+
     # if message.content.startswith('!set_map'):
     #     # admin = message.author.roles.find
     #     # admin = discord.utils.get(ctx.guild.roles, name = "db_admin")
@@ -45,6 +55,7 @@ async def on_message(message, ctx):
     #     else:
     #         await message.channel.send(embed=discord.Embed(title="권한 부족", description = message.author.mention + "님은 채널을 관리 할 수 있는 권한이 없습니다.", color = 0xff0000))
     #     await message.channel.send(result)
+
 
     #test :: getLocType
     if message.content.startswith('!getLocType'):
