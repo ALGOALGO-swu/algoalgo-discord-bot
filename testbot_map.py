@@ -31,8 +31,8 @@ async def on_message(message):
         await message.channel.send(result)
     
 
-    if message.guild.roles[-1] == message.author.roles[-1]:
-        await message.channel.send(embed=discord.Embed(title="권한 info", description = message.author + "님의 권한은" + message.author.roles[0], color = 0xff0000))
+    # if message.guild.roles[-1] == message.author.roles[-1]:
+        
  
 
 
@@ -68,6 +68,7 @@ async def on_message(message):
         embed = discord.Embed(title = f"""== the player list in the **{nowLoc}** location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
+        await message.channel.send(embed=discord.Embed(title="권한 info", description = "님의 권한은" + message.author.roles[0], color = 0xff0000))
     
 
 client.run(os.environ['token_map'])
