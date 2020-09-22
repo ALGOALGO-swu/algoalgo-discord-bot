@@ -29,8 +29,16 @@ async def on_message(message, ctx):
     
     #set map feature
     if message.content.startswith('!set_map'):
-        admin = discord.utils.get(ctx.guild.roles, name = "db_admin")
-        result = algoalgo_map.setmap(message.content, message.author, admin, ctx)
+        # admin = message.author.roles.find
+        # admin = discord.utils.get(ctx.guild.roles, name = "db_admin")
+        
+        result = f"[*] the permission required."
+        # if message.author.roles.has('db_admin')
+        # for role in message.author.roles:
+        #     if get(ctx.guild.roles, name = "db_admin") in role
+
+        if message.author in get(ctx.guild.roles, name = "db_admin").members:
+            result = algoalgo_map.setmap(message.content)
         await message.channel.send(result)
 
     #test :: getLocType
