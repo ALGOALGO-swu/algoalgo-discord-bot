@@ -71,9 +71,9 @@ async def on_message(message):
         
     # printing role id 
     if message.content.startswith('!role_id'):
-        RList = ""
-        for i in range(len(message.guild.roles)):
-            RList += message.author.roles[i].mention
-        await message.channel.send(embed=discord.Embed(title="권한 info", description = f"""== {message.author}님의 권한은 {RList} ==""", color = 0xff0000))
+        # RList = ""
+        # for i in range(len(message.guild.roles)):
+        #     RList += message.author.roles[i].mention
+        await message.channel.send(embed=discord.Embed(title="권한 info", description = f"""== {message.author}님의 권한은 {message.author.top_role.mention} ==""", color = 0xff0000))
         
 client.run(os.environ['token_map'])
