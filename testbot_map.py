@@ -34,11 +34,16 @@ async def on_message(message, ctx):
         
         result = f"[*] the permission required."
         # if message.author.roles.has('db_admin')
-        # for role in message.author.roles:
-        #     if get(ctx.guild.roles, name = "db_admin") in role
-
-        if message.author in get(ctx.guild.roles, name = "db_admin").members:
-            result = algoalgo_map.setmap(message.content)
+        # if message.guild.get in get(ctx.guild.roles, name = "db_admin").members:
+        # if get(ctx.guild.roles, name = "db_admin") in discord.member.roles:
+            
+        if (message.author.guild_permissions.administrator):
+            try:
+                result = algoalgo_map.setmap(message.content)
+            except Exception as e:
+                await message.channel.send(embed=discord.Embed(title="에러 발생", description = str(e), color = 0xff0000))
+        else:
+            await message.channel.send(embed=discord.Embed(title="권한 부족", description = message.author.mention + "님은 채널을 관리 할 수 있는 권한이 없습니다.", color = 0xff0000))
         await message.channel.send(result)
 
     #test :: getLocType
