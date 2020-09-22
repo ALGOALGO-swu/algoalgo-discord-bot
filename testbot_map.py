@@ -5,6 +5,9 @@ import os
 
 client = commands.Bot(command_prefix = '-')
 
+# roles
+@commands.has_any_role('db_admin', 'db_admin')
+
 @client.event 
 async def on_ready():
     await client.change_presence(status=discord.Status.online)
@@ -27,7 +30,8 @@ async def on_message(message):
     
     #set map feature
     if message.content.startswith('!set_map'):
-        result = algoalgo_map.setmap(message.content)
+        admin = discord.utils.get(ctx.guild.roles, name = "db_admin")
+        result = algoalgo_map.setmap(message.content, message.author, admin, ctx)
         await message.channel.send(result)
 
     #test :: getLocType
