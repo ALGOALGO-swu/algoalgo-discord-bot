@@ -35,7 +35,7 @@ async def on_message(message):
         for i in range(len(message.guild.roles)):
             Ridlist = ""
             Ridlist += message.guild.roles[i].id
-            await message.channel.send(Ridlist)
+        await message.channel.send(Ridlist)
 
 
     # if message.content.startswith('!set_map'):
