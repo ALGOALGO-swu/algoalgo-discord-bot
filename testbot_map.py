@@ -59,8 +59,8 @@ async def on_message(message):
 
 
     #admin ::  printing all_role id 
-    if message.content.startswith('!all_role_id'):
+    if message.content.startswith('!all_roles_id'):
         for i in range(len(message.author.roles)):
-            message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the roles INFO ==""", description = f""" the role #{i} :: {message.author.role[i].name}\n the role #{i}'s' id :: {message.author.role[i].id} """, color = 0x6b9560))
+            await message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the roles INFO ==""", description = f""" the role #{i} :: {message.author.roles[i].name}\n the role #{i}'s' id :: {message.author.roles[i].id} """, color = 0x6b9560))
          
 client.run(os.environ['token_map'])
