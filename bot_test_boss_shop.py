@@ -3,6 +3,7 @@ import asyncio
 from discord.ext import commands
 from discord.ext.commands import Bot
 import algoalgo_shop
+import os
 
 client = commands.Bot(command_prefix='!')
 
@@ -15,7 +16,6 @@ async def on_ready():
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
     await client.change_presence(status=discord.Status.online, activity=discord.Game("보스샵 쇼핑"))
-
 
 @client.event
 async def on_message(message):
@@ -57,4 +57,4 @@ async def on_message(message):
             else:
                 await message.channel.send("포인트가 부족합니다. 구매를 종료합니다")
 
-client.run('-')
+client.run('os.environ['token_shop']')
