@@ -16,7 +16,6 @@ async def on_ready():
     print('------')
     await client.change_presence(status=discord.Status.online, activity=discord.Game("쇼핑"))
 
-
 @client.event
 async def on_message(message):
     # show items detail info
