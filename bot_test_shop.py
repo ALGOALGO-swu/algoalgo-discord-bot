@@ -3,8 +3,9 @@ import asyncio
 from discord.ext import commands
 from discord.ext.commands import Bot
 import algoalgo_shop
+import os
 
-client = commands.Bot(command_prefix='!')
+client = commands.Bot(command_prefix='-')
 
 @client.event
 async def on_ready():
@@ -15,7 +16,6 @@ async def on_ready():
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
     await client.change_presence(status=discord.Status.online, activity=discord.Game("쇼핑"))
-
 
 @client.event
 async def on_message(message):
@@ -60,4 +60,4 @@ async def on_message(message):
     #     result = algoalgo_shop.setpoint(message.author)
     #     await message.channel.send(result)
 
-client.run('-')
+client.run('os.environ['token_shop']')
