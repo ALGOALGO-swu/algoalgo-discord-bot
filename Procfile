@@ -1,1 +1,1 @@
-worker: python testbot_map.py
+worker: python bot-test.py 
