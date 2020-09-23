@@ -66,7 +66,7 @@ def updateitem(author,item):
 
 # 소유한 아이템 출력
 def useitem(author):
-    sql = "select items from member where discord_id='{author}'"
+    sql = f"select items from member where discord_id='{str(author)}'"
     try:
         sql_result=sql_exe(sql)
         # 인덱스. 아이템명 : 소유 개수 형식의 리스트 출력해야함
