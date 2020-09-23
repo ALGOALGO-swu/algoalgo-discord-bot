@@ -2,6 +2,7 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord.ext.commands import Bot
+import os
 import algoalgo_shop
 
 client = commands.Bot(command_prefix='!')
