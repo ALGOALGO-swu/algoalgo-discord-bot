@@ -59,4 +59,4 @@ async def on_message(message):
     #     result = algoalgo_shop.setpoint(message.author)
     #     await message.channel.send(result)
 
-client.run('-')
+client.run(os.environ['token_shop'])
