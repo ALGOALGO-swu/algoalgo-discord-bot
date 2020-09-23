@@ -1,38 +1,48 @@
 import discord
 import os
 import algoalgo_member
-import member
 from apscheduler.schedulers.background import BackgroundScheduler
 
 REFRESH_TIME = '5'
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print("We have logged in as {0.user}".format(client))
+
 
 @client.event
 async def on_message(message):
     # if this message is sent by bot itself, do nothing.
     if message.author == client.user:
         return
-    
+
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
     if message.content.startswith('!refresh'):
-        result = member.refresh()
+        result = algoalgo_member.refresh()
         await message.channel.send(result)
 
     if message.content.startswith('!addpoint'):
-        result = member.addpoint(message.content)
+        result = algoalgo_member.addpoint(message.content)
         await message.channel.send(result)
 
     if message.content.startswith('!list_achievement'):
-        result = member.list_achievement()
+        result = algoalgo_member.list_achievement()
         embed = discord.Embed(title="Achievement List", description=result, color=0xffffff)
         await message.channel.send(embed=embed)
+
+    if message.content.startswith('!random_bj'):
+        result = algoalgo_member.random_bj(str(message.author), message.content)
+        embed = discord.Embed(title="Try This!", description=result, color=0xffffff)
+        await message.channel.send(embed=embed)
+
+    if message.content.startswith('!daily_baekjoon'):
+        result = algoalgo_member.daily_baekjoon(str(message.author), message.content)
+        await message.channel.send(result)
 
     # adduser function
     if message.content.startswith('!adduser'):
@@ -51,4 +61,5 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
 
-#client.run(os.environ['discord-token'])
+# client.run(os.environ['discord-token'])
+client.run()
