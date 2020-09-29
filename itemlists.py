@@ -72,25 +72,31 @@ def useitem(author):
         # 인덱스. 아이템명 : 소유 개수 형식의 리스트 출력해야함
         itemlist=sql_result.split(";") # 중복있는 아이템목록
         count = Counter(itemlist) # 유저의 아이템 종류 수
-
-        # 인벤토리가 비었다.
-        if len(count) == 1:
-            return 0
-
-        # print(shop&itemlist) # showuserinfo 에서 나오는 아이템 목록 출력?
-        shop={"STEP", "REDEMPTION", "SNAKE", "ASSASSIN", "STUN", "CAFFEINE", "REDBULL", "BOMB"}
-        itemlists = list(shop&set(itemlist)) # 중복없는 아이템 목록
-
-        # 인덱스 및 아이템 갯수 넣기
-        index = len(count)-1 #유저가 가진 아이템 가짓수
-        item_dic={} #딕셔너리: 유저 아이템 인덱스,[아이템명,가진수] 
         
-        ''' 유저가 가진 아이템 목록 출력'''
-        for id,it in zip(range(index),itemlists):
-            #print(id+1,".",it,":",count[it],"개") # 인덱스. 아이템명:아이템갯수 개 
-            item_dic[id]=[it,count[it]] #딕셔너리로 묶어놓음
-            print(id+1,".",item_dic[id][0],":",item_dic[id][1],"개")
-        return "[*] success print itemlist {author}", item_dic #아이템 인덱스,[아이템명,가진수] 반환
+        try:
+
+            # 인벤토리가 비었다.
+            if len(count) == 1:
+                return 0
+
+            # print(shop&itemlist) # showuserinfo 에서 나오는 아이템 목록 출력?
+            shop={"STEP", "REDEMPTION", "SNAKE", "ASSASSIN", "STUN", "CAFFEINE", "REDBULL", "BOMB"}
+            itemlists = list(shop&set(itemlist)) # 중복없는 아이템 목록
+
+            # 인덱스 및 아이템 갯수 넣기
+            index = len(count)-1 #유저가 가진 아이템 가짓수
+            item_dic={} #딕셔너리: 유저 아이템 인덱스,[아이템명,가진수] 
+        
+            ''' 유저가 가진 아이템 목록 출력'''
+            for id,it in zip(range(index),itemlists):
+                #print(id+1,".",it,":",count[it],"개") # 인덱스. 아이템명:아이템갯수 개 
+               item_dic[id]=[it,count[it]] #딕셔너리로 묶어놓음
+               print(id+1,".",item_dic[id][0],":",item_dic[id][1],"개")
+            return "[*] success print itemlist {author}", item_dic #아이템 인덱스,[아이템명,가진수] 반환
+            
+        except Exception as ex:
+            return "[!] can not access db", ex
+
     except Exception as ex:
-        return "[!] error finding your info: {ex}"
+        return "[!] error finding your info: ", ex
 
