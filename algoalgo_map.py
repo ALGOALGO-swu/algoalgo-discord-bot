@@ -190,21 +190,21 @@ def step(discord_id):
             if map_sql_result[0]['feature'] == 1 :
                 # map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
                 # sql_update(map_location_sql2)
-                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
             if map_sql_result[0]['feature'] == 2 :
                 # LocFeatureInfo = "**SNAKE**🐍"
-                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
                 
             if map_sql_result[0]['feature'] == 3 :
                 # LocFeatureInfo = "**BOSS**🧟‍♀️"
-                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
         else:
             return f"[*] 문제를 푸셔야합니다.", 0, 0
 
     except Exception as ex:
-        return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
+        return f"[!] An error occurs while finding **{discord_id}** 's location on the map in db....\n[INFO] error : {ex}"
 
 
 
