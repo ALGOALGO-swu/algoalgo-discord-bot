@@ -221,6 +221,7 @@ def refresh():
     except Exception as ex:
         return f"[!] An error occurs while refresh db....\n[INFO] error : {ex}"
 
+    print('refresh done')
     return f"[+] Refresh Done"
 
 
