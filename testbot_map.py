@@ -4,7 +4,8 @@ import algoalgo_map
 import os
 
 client = commands.Bot(command_prefix = '-')
-admin = 742625793276116992
+#admin = 742625793276116992
+admin = 751022850466381845
 
 @client.event 
 async def on_ready():
