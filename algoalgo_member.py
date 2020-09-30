@@ -4,13 +4,15 @@ import requests
 from bs4 import BeautifulSoup
 from random import randint
 
+import os
+import algoalgo_bj_crawling
 
 def sql_update(query, *args):
     db_conn = pymysql.connect(
-        user='',
-        passwd='',
-        host='',
-        db='',
+        user='staff', 
+        passwd=os.environ['db_pass'],
+        host='34.64.120.154', 
+        db='algoalgo', 
         charset='utf8'
     )
 
@@ -30,10 +32,10 @@ def sql_update(query, *args):
 
 def sql_update_many(query, *args):
     db_conn = pymysql.connect(
-        user='',
-        passwd='',
-        host='',
-        db='',
+        user='staff', 
+        passwd=os.environ['db_pass'],
+        host='34.64.120.154', 
+        db='algoalgo', 
         charset='utf8'
     )
 
@@ -78,15 +80,17 @@ def sql_exe(query, *args):
 
 def adduser(author, cmd):
     args = cmd.split()
-    if len(args) != 4:
+    if author == "admin" and len(args) != 5:
+        return "[!] Usage : !adduser <name> <student_id> <baekjoon_id> <discord_id>"
+    elif author != "admin" and len(args) != 4:
         return "[!] Usage : !adduser <name> <student_id> <baekjoon_id>"
     # !adduser <이름> <학번> <백준 아이디>
 
-    dc_id = author
+    dc_id = author == "admin" if author else args[4]
     name = args[1]
     s_id = args[2]
     bj_id = args[3]
-    bj_solved = "sample;sample1;sample2;"
+    bj_solved = algoalgo_bj_crawling.getBJSolved(bj_id)
 
     sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
     try:
@@ -106,8 +110,7 @@ def showuserinfo(author):
 
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
-        userinfo = f"""
-        discord_id : {sql_result[0]['discord_id']}
+        userinfo = f"""discord_id : {sql_result[0]['discord_id']}
         name : {sql_result[0]['name']}
         **- GAME INFO**
         status : {sql_result[0]['status']}
@@ -121,7 +124,8 @@ def showuserinfo(author):
         """
         return f"[*] Successfully Inquires data about {author}", userinfo
     except Exception as ex:
-        return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}"
+        return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}", None
+
 
 
 def truncate(cmd):
