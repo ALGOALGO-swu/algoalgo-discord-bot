@@ -191,7 +191,8 @@ def step(discord_id):
 
             
             if map_sql_result[0]['feature'] == 1 :
-                
+                map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
+                sql_update(map_location_sql2)
                 return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
             if map_sql_result[0]['feature'] == 2 :
