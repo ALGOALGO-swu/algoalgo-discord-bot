@@ -164,48 +164,48 @@ def showmap(author):
     
     # return f"[+] success adding user into db...{author}"
 
-    # STEP
-    def step(discord_id):
-        sql = f"select * from member where discord_id='{str(discord_id)}'"
-        try:
-            sql_result = sql_exe(sql)
+# STEP
+def step(discord_id):
+    sql = f"select * from member where discord_id='{str(discord_id)}'"
+    try:
+        sql_result = sql_exe(sql)
 
-            #STEP-2
-            daily_step_sql = f"update member set daily_step ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
-            sql_update(daily_step_sql)
+        #STEP-2
+        daily_step_sql = f"update member set daily_step ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
+        sql_update(daily_step_sql)
 
 
-            #STEP-3
-            if sql_result[0]['status'] == 1 :
+        #STEP-3
+        if sql_result[0]['status'] == 1 :
 
-                #STEP-4
-                map_location_sql = f"update member set map_location ='{sql_result[0]['map_location'] + 1}' where discord_id='{str(discord_id)}'"
-                sql_update(map_location_sql)
+            #STEP-4
+            map_location_sql = f"update member set map_location ='{sql_result[0]['map_location'] + 1}' where discord_id='{str(discord_id)}'"
+            sql_update(map_location_sql)
 
-                #STEP-5
-                map_sql = f"select * from map where id='{int(sql_result[0]['map_location'])+1}'"
-                map_sql_result = sql_exe(map_sql)
+            #STEP-5
+            map_sql = f"select * from map where id='{int(sql_result[0]['map_location'])+1}'"
+            map_sql_result = sql_exe(map_sql)
+
+            
+            if map_sql_result[0]['feature'] == 1 :
+                # map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
+                # sql_update(map_location_sql2)
+                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+
+            if map_sql_result[0]['feature'] == 2 :
+                # LocFeatureInfo = "**SNAKE**🐍"
+                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
                 
-                if map_sql_result[0]['feature'] == 1 :
-                    # map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
-                    # sql_update(map_location_sql2)
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+            if map_sql_result[0]['feature'] == 3 :
+                # LocFeatureInfo = "**BOSS**🧟‍♀️"
+                return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+        else:
+            return f"[*] 문제를 푸셔야합니다.", 0, 0
 
-                if map_sql_result[0]['feature'] == 2 :
-                    # LocFeatureInfo = "**SNAKE**🐍"
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+    except Exception as ex:
+        return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
 
-                    
-                if map_sql_result[0]['feature'] == 3 :
-                    # LocFeatureInfo = "**BOSS**🧟‍♀️"
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
-            else:
-                return f"[*] 문제를 푸셔야합니다.", 0, 0
-
-        except Exception as ex:
-            return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
-    
 
 
 
