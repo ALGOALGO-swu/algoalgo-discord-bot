@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 import os
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
 import algoalgo_member
 import algoalgo_shop
