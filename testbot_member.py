@@ -1,9 +1,8 @@
 import discord
 import os
 import algoalgo_member
-from apscheduler.schedulers.background import BackgroundScheduler
-
-REFRESH_TIME = '5'
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from datetime import datetime
 
 client = discord.Client()
 admin = 742625793276116992
@@ -12,6 +11,10 @@ admin = 742625793276116992
 async def on_ready():
     print("We have logged in as {0.user}".format(client))
 
+@client.event
+async def db_refresh():
+    print(datetime.now())
+    algoalgo_member.refresh()
 
 @client.event
 async def on_message(message):
@@ -76,5 +79,9 @@ async def on_message(message):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 """
+
+sched = AsyncIOScheduler()
+sched.add_job(db_refresh, 'cron', hour=0)
+sched.start()
 
 client.run()
