@@ -1,7 +1,5 @@
 # algoalgo-discord-bot
-<<<<<<< HEAD
-아 살려줘 저거 수정중이 저렇게 나올줄은 몰랐지
-나중에 수정하겠습니다 
+
 =======
 
 ## algoalgo-discord-bot Conventions
@@ -32,4 +30,3 @@
 > 각자 맡은 feature별로 브랜치 생성, 완성되면 master에 merge !!
 
 > 브랜치 이름 ::  branch_각자 맡은 feature
->>>>>>> master
