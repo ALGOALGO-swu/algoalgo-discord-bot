@@ -65,12 +65,17 @@ def sql_exe(query, *args):
 
     cursor = db_conn.cursor(pymysql.cursors.DictCursor)
     try:
+        print(1)
         cursor.execute(query, args)
+        print(2)
 
         result = cursor.fetchall()
+        print(3)
 
         db_conn.commit()
+        print(4)
         db_conn.close()
+        print(5)
 
         return result
 
