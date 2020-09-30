@@ -118,11 +118,11 @@ def showuserinfo(author):
         your point : {sql_result[0]['point']}
         your location : {sql_result[0]['map_location']}
         **- items**
-        {"STEP":^20}|{item_dir['STEP']}
-        {"SNAKE":^20}|{item_dir['SNAKE']}
-        {"STUN":^20}|{item_dir['STUN']}
-        {"ASSASSIN":^20}|{item_dir['ASSASSIN']}
-        {"REDEMPTION":^20}|{item_dir['REDEMPTION']} 
+        {"STEP":20}|{item_dir['STEP']}
+        {"SNAKE":20}|{item_dir['SNAKE']}
+        {"STUN":20}|{item_dir['STUN']}
+        {"ASSASSIN":20}|{item_dir['ASSASSIN']}
+        {"REDEMPTION":20}|{item_dir['REDEMPTION']} 
         
         **- BAEKJOON INFO**
         baekjoon id : {sql_result[0]['baekjoon_id']}
@@ -438,6 +438,9 @@ def show_items(items_list):
     "STUN" : 0,
     "ASSASSIN" : 0,
     "REDEMPTION" : 0,
+    "CAFFEINE" : 0,
+    "BOMB" : 0,
+    "RED BULL" : 0
     }
     if items_list != None:    
         items_list = items_list.rstrip(';')
