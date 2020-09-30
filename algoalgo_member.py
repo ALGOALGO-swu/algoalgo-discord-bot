@@ -108,6 +108,10 @@ def showuserinfo(author):
         sql_result = sql_exe(sql)
         print(sql_result)
 
+        item_dir = show_items(sql_result[0]['items'])
+        
+
+
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
         userinfo = f"""discord_id : {sql_result[0]['discord_id']}
@@ -117,7 +121,13 @@ def showuserinfo(author):
         your steps on today : {sql_result[0]['daily_steps']}
         your point : {sql_result[0]['point']}
         your location : {sql_result[0]['map_location']}
-        items : {sql_result[0]['items']}
+        **- items**
+        {"STEP"^20}|{item_dir['STEP']}
+        {"SNAKE"^20}|{item_dir['SNAKE']}
+        {"STUN"^20}|{item_dir['STUN']}
+        {"ASSASSIN"^20}|{item_dir['ASSASSIN']}
+        {"REDEMPTION"^20}|{item_dir['REDEMPTION']} 
+        
         **- BAEKJOON INFO**
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
@@ -425,3 +435,17 @@ def unlock(author):
     # 그 외의 에러
     else:
         return "[!] Status Error: Call the Admins"
+
+def show_items(items_list):
+    item_dir = {"STEP" : 0,
+    "SNAKE" : 0,
+    "STUN" : 0,
+    "ASSASSIN" : 0,
+    "REDEMPTION" : 0,
+    }
+    items_list = items_list.rstrip(';')
+    items = items_list.split(';')
+    for item in items:
+        item_dir[item] += 1
+        
+    return item_dir
