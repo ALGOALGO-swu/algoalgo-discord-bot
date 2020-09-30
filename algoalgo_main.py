@@ -7,6 +7,8 @@ import algoalgo_shop
 
 
 client = discord.Client()
+admin = 742625793276116992
+
 
 @client.event
 async def on_ready():
@@ -17,6 +19,11 @@ async def on_ready():
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
     await client.change_presence(status=discord.Status.online, activity=discord.Game("GM on Board (feat. algorithm)"))
+
+@client.event
+async def db_refresh():
+    print(datetime.now())
+    algoalgo_member.refresh()
 
 @client.event
 async def on_message(message):
