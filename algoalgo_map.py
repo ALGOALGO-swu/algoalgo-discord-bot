@@ -174,7 +174,7 @@ def step(discord_id):
         sql_result = sql_exe(sql)
 
         #STEP-2
-        daily_step_sql = f"update member set daily_step ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
+        daily_step_sql = f"update member set daily_steps ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
         sql_update(daily_step_sql)
 
 
