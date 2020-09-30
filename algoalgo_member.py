@@ -251,7 +251,6 @@ def problem_rank_update():
             print(ex)
             return f"[!] An error occurs while updating problem ranks into db....\n[INFO] error : {ex}"
 
-
     print("starting update")
     for rank in range(1, 31):
         save_problem_list(rank)
@@ -309,6 +308,35 @@ def random_bj(author, cmd):
 def daily_baekjoon(author, cmd):
     args = cmd.split()
     if len(args) != 2:
-        return "Usage : !random_bj <tier>"
-    tier = args[1]
-    print(tier)
+        return "Usage : !daily_baekjoon <Problem id>"
+    pid = args[1]
+    solvedlist = sql_exe("SELECT bj_solved FROM member WHERE discord_id = %s", author)[0]['bj_solved']
+    if pid in solvedlist.split(';')[:-1]:
+        return "이미 인증된 문제입니다."
+    if pid not in get_solved(sql_exe("SELECT baekjoon_id FROM member WHERE discord_id = %s", author)[0]['baekjoon_id']):
+        return "문제를 풀지 않았습니다."
+    solvedlist += (str(pid) + ';')
+    sql_update("UPDATE member SET bj_solved = %s WHERE discord_id = %s", solvedlist, author)
+    addpoint(f"!addpoint 11 {author}")
+    sql_update("UPDATE member SET bj_today = 1 WHERE discord_id = %s", author)
+    return "인증이 완료되었습니다."
+
+def unlock(author):
+    memberinfo = sql_exe("SELECT status, map_location, baekjoon_id, bj_solved FROM member WHERE discord_id = %s", author)[0]
+    if memberinfo['status'] == 1:
+        return "이미 해제되었습니다. 다음 칸으로 이동해주세요."
+    if memberinfo['status'] == -1:
+        return "stun이 걸려있습니다. 내일 00:00 이후 다시 진행해주세요."
+    if memberinfo['status'] == 0:
+        pid = sql_exe("SELECT baekjoon_no FROM map WHERE id = %s", memberinfo['map_location'])[0]['baekjoon_no']
+        print(pid)
+        if pid in get_solved(memberinfo['baekjoon_id']):
+            sql_update("UPDATE member SET status = 1 WHERE baekjoon_id = %s", memberinfo['baekjoon_id'])
+            if pid not in memberinfo['bj_solved'].split(';')[:-1]:
+                memberinfo['bj_solved'] += (str(pid) + ';')
+            return "해제되었습니다."
+        else:
+            print(get_solved(memberinfo['baekjoon_id']))
+            return "문제를 풀지 않으셨습니다."
+    else:
+        return "에러가 발생하였습니다."

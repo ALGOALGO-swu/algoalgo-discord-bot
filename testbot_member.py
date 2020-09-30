@@ -44,6 +44,10 @@ async def on_message(message):
         result = algoalgo_member.daily_baekjoon(str(message.author), message.content)
         await message.channel.send(result)
 
+    if message.content.startswith('!unlock'):
+        result = algoalgo_member.unlock(str(message.author))
+        await message.channel.send(result)
+"""
     # adduser function
     if message.content.startswith('!adduser'):
         result = algoalgo_member.adduser(str(message.author), message.content)
@@ -59,7 +63,7 @@ async def on_message(message):
         embed = discord.Embed(title=f"USERINFO_{message.author}", description=userinfo, color=0xffffff)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
-
+"""
 
 # client.run(os.environ['discord-token'])
 client.run()
