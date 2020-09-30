@@ -89,7 +89,7 @@ def buy_item(author, cmd): #!buy_item <아이템> <개수>
     for i in range(cnt):
         gogo+=item+';'
     
-    sql = f"update member set items = CONCAT(items, (%s)) where discord_id='{str(author)}'"
+    sql = f"update member set items = CONCAT_WS(';', items, %s) where discord_id='{str(author)}'"
     sql2 = f"update member set point = point-{item_price} where discord_id='{str(author)}'"
     try:
         sql_update(sql, gogo)
