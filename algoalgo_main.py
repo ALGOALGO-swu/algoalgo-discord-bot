@@ -41,6 +41,45 @@ async def on_message(message):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 
+    if message.content.startswith('!refresh'):
+        result = f"[!] Admin Permission Required."
+        if message.author.top_role.id == admin:
+            result = algoalgo_member.refresh()
+        await message.channel.send(result)
+
+    if message.content.startswith('!addpoint'):
+        result = f"[!] Admin Permission Required."
+        if message.author.top_role.id == admin:
+            result = algoalgo_member.addpoint(message.content)
+        await message.channel.send(result)
+
+    if message.content.startswith('!list_achievement'):
+        result = algoalgo_member.list_achievement()
+        if result.split()[0] != '[!]':
+            embed = discord.Embed(title="Achievement List", description=result, color=0xffffff)
+            await message.channel.send(f"[*] Successfully Inquired Achievement List")
+            await message.channel.send(embed=embed)
+        else:
+            await message.channel.send(result)
+
+    if message.content.startswith('!random_bj'):
+        result = algoalgo_member.random_bj(str(message.author), message.content)
+        if result.split()[0] != '[!]':
+            embed = discord.Embed(title="Try This!", description=result, color=0xffffff)
+            await message.channel.send(f"[*] Successfully Found A Random Baekjoon Problem")
+            await message.channel.send(embed=embed)
+        else:
+            await message.channel.send(result)
+
+    if message.content.startswith('!daily_baekjoon'):
+        result = algoalgo_member.daily_baekjoon(str(message.author), message.content)
+        await message.channel.send(result)
+
+    if message.content.startswith('!unlock'):
+        result = algoalgo_member.unlock(str(message.author))
+        await message.channel.send(result)
+
+
     # show items detail info
     if message.content.startswith('!showshopinfo'):
         embed = discord.Embed(title="ALGOALGO SHOP BOT",description="SHOP 아이템 목록", color=0x00aaaa, inline=True)
