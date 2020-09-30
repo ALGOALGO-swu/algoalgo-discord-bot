@@ -35,5 +35,4 @@ async def on_message(message):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 
-client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.2bnBbWVMrIO48j2S8RMoT8KjTBo")
-# client.run(os.environ['discord-token'])
+client.run(os.environ['discord-token'])

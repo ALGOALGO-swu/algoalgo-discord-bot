@@ -5,8 +5,7 @@ import algoalgo_bj_crawling
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd = "sleepy-algoalgo-staffs",
-        # passwd=os.environ['db_pass'], 
+        passwd=os.environ['db_pass'], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -91,8 +90,7 @@ def showuserinfo(author):
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
         """ 
-        print(userinfo)
-        print("Sdddddddddddddd")
+
         return f"[*] Successfully Inquires data about {author}", userinfo
     except Exception as ex:
         return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}", None
