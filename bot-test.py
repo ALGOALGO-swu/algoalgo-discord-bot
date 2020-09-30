@@ -14,13 +14,14 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
-    
     # adduser function
     if message.content.startswith('!adduser'):
         result = algoalgo_member.adduser(str(message.author), message.content)
+        await message.channel.send(result)
+    
+    # adduser function - admin
+    if message.content.startswith('!admin_adduser'):
+        result = algoalgo_member.adduser("admin", message.content)
         await message.channel.send(result)
     
     # have to add truncate table
@@ -34,4 +35,5 @@ async def on_message(message):
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 
-client.run(os.environ['discord-token'])
+client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.2bnBbWVMrIO48j2S8RMoT8KjTBo")
+# client.run(os.environ['discord-token'])

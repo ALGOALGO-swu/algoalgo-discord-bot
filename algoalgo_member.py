@@ -1,10 +1,12 @@
 import pymysql
 import os
+import algoalgo_bj_crawling
 
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd=os.environ['db_pass'], 
+        passwd = "sleepy-algoalgo-staffs",
+        # passwd=os.environ['db_pass'], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -48,15 +50,17 @@ def sql_exe(query):
 
 def adduser(author, cmd):
     args = cmd.split()
-    if len(args) != 4:
+    if author == "admin" and len(args) != 5:
+        return "Usage : !adduser <name> <student_id> <baekjoon_id> <discord_id>"
+    elif author != "admin" and len(args) != 4:
         return "Usage : !adduser <name> <student_id> <baekjoon_id>"
     # !adduser <이름> <학번> <백준 아이디>
 
-    dc_id = author
+    dc_id = author == "admin" if author else args[4]
     name = args[1]
     s_id = args[2]
     bj_id = args[3]
-    bj_solved = "sample;sample1;sample2;"
+    bj_solved = algoalgo_bj_crawling.getBJSolved(bj_id)
 
     sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
     try:
