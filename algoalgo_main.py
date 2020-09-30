@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 import os
+from datetime import datetime
 import algoalgo_member
 import algoalgo_shop
 
@@ -164,5 +165,5 @@ async def on_message(message):
 client.run(os.environ['discord-token'])
 
 sched = AsyncIOScheduler()
-sched.add_job(db_refresh, 'cron', hour=0)
+sched.add_job(db_refresh, 'cron', minute=15)
 sched.start()
