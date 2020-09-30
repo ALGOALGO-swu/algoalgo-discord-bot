@@ -1,3 +1,7 @@
 discord.py
 asyncio
 pymysql
+requests
+bs4
+apscheduler
+datetime

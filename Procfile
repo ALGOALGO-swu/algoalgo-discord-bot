@@ -1,1 +1,1 @@
-worker: python tbot.py
+worker: python algoalgo_main.py 
