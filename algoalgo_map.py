@@ -4,7 +4,7 @@ import os
 def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd=os.environ["db"], 
+        passwd=os.environ["db_pass"], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
@@ -26,7 +26,7 @@ def sql_update(query, *args):
 def sql_exe(query):
     db_conn = pymysql.connect(
         user='staff', 
-        passwd=os.environ["db"], 
+        passwd=os.environ["db_pass"], 
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
