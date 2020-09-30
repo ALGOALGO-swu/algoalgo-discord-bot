@@ -34,11 +34,7 @@ async def on_message(message):
         result = algoalgo_member.adduser("admin", message.content)
         await message.channel.send(result)
     
-    # have to add truncate table
-    if message.content.startswith('!truncate'):
-        result = algoalgo_member.truncate(message.content)
-        await message.channel.send(result)
-    
+    # show user info
     if message.content.startswith('!showuserinfo'):
         result, userinfo = algoalgo_member.showuserinfo(message.author)
         embed = discord.Embed(title = f"USERINFO_{message.author}", description=userinfo, color = 0xffffff)

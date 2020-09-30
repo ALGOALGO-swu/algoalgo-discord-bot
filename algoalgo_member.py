@@ -56,10 +56,10 @@ def sql_update_many(query, *args):
 
 def sql_exe(query, *args):
     db_conn = pymysql.connect(
-        user='',
-        passwd='',
-        host='',
-        db='',
+        user='staff', 
+        passwd=os.environ['db_pass'],
+        host='34.64.120.154', 
+        db='algoalgo', 
         charset='utf8'
     )
 
