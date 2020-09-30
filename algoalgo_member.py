@@ -65,17 +65,12 @@ def sql_exe(query, *args):
 
     cursor = db_conn.cursor(pymysql.cursors.DictCursor)
     try:
-        print(1)
         cursor.execute(query, args)
-        print(2)
 
         result = cursor.fetchall()
-        print(3)
 
         db_conn.commit()
-        print(4)
         db_conn.close()
-        print(5)
 
         return result
 
@@ -112,7 +107,7 @@ def showuserinfo(author):
     try:
         sql_result = sql_exe(sql)
         item_dir = show_items(sql_result[0]['items'])
-        
+        print(1)
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
         userinfo = f"""discord_id : {sql_result[0]['discord_id']}
@@ -133,8 +128,10 @@ def showuserinfo(author):
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
         """
+        print(2)
         return f"[*] Successfully Inquires data about {author}", userinfo
     except Exception as ex:
+        print(ex)
         return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}", None
 
 
