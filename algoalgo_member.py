@@ -55,7 +55,7 @@ def adduser(author, cmd):
         return "Usage : !adduser <name> <student_id> <baekjoon_id>"
     # !adduser <이름> <학번> <백준 아이디>
 
-    dc_id = author == "admin" if author else args[4]
+    dc_id = author if author != "admin" else args[4]
     name = args[1]
     s_id = args[2]
     bj_id = args[3]
