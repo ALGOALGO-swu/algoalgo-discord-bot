@@ -106,12 +106,8 @@ def showuserinfo(author):
 
     try:
         sql_result = sql_exe(sql)
-        print(sql_result)
-
         item_dir = show_items(sql_result[0]['items'])
         
-
-
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
         userinfo = f"""discord_id : {sql_result[0]['discord_id']}
@@ -443,9 +439,10 @@ def show_items(items_list):
     "ASSASSIN" : 0,
     "REDEMPTION" : 0,
     }
-    items_list = items_list.rstrip(';')
-    items = items_list.split(';')
-    for item in items:
-        item_dir[item] += 1
+    if items_list != None:    
+        items_list = items_list.rstrip(';')
+        items = items_list.split(';')
+        for item in items:
+            item_dir[item] += 1
         
     return item_dir
