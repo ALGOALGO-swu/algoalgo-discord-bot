@@ -138,31 +138,34 @@ def showmap(author):
         return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
     except Exception as ex:
         return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
-   
 
 
-
-
-# # 위치 이동 함수
-# def shopstep(author, cmd):
-#     args = cmd.split()
-#     if len(args) != 4:
-#         return "Usage : !shop_step <name> <student_id> <next_loc>"
-#     # !shop_step <이름> <학번> <이동할 위치>
-
-#     dc_id = author
-#     name = args[1]
-#     s_id = args[2]
-#     next_loc = args[3]
-   
-
-    # sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
-    # try:
-    #     sql_update(sql, dc_id, s_id, name, bj_id, bj_solved)
-    # except Exception as ex:
-    #     return f"[!] An error occurs while adding user({author}) into db....\n[INFO] error : {ex}"
+# SNAKE
+def snake(discord_id):
+    #STEP 6-2 는 메세지로 알려주기
+    sql = f"select * from member where discord_id='{str(discord_id)}'"
     
-    # return f"[+] success adding user into db...{author}"
+    try:
+        sql_result = sql_exe(sql)
+
+        map_sql = f"select * from map where id='{sql_result[0]['map_location']}'"
+        map_sql_result = sql_exe(map_sql)
+
+        #STEP 6-2 는 메세지로 알려주기
+
+        map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
+        sql_update(map_location_sql2)
+        return f"[*] Successfully updataed data about **{discord_id}** 's location on the snake map"
+
+
+    except Exception as ex:
+        return f"[!] An error occurs while finding **{discord_id}** 's location on the map in db....\n[INFO] error : {ex}"
+
+
+
+
+
+
 
 # STEP
 def step(discord_id):
@@ -188,8 +191,7 @@ def step(discord_id):
 
             
             if map_sql_result[0]['feature'] == 1 :
-                # map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
-                # sql_update(map_location_sql2)
+                
                 return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
             if map_sql_result[0]['feature'] == 2 :
@@ -204,9 +206,5 @@ def step(discord_id):
             return f"[*] 문제를 푸셔야합니다.", 0, 0
 
     except Exception as ex:
-        return f"[!] An error occurs while finding **{discord_id}** 's location on the map in db....\n[INFO] error : {ex}"
-
-
-
-
+        return f"[!] An error occurs while finding **{discord_id}** 's location on the map in db....\n[INFO] error : {ex}",0,0
 
