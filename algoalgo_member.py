@@ -56,10 +56,10 @@ def sql_update_many(query, *args):
 
 def sql_exe(query, *args):
     db_conn = pymysql.connect(
-        user='',
-        passwd='',
-        host='',
-        db='',
+        user='staff', 
+        passwd=os.environ['db_pass'],
+        host='34.64.120.154', 
+        db='algoalgo', 
         charset='utf8'
     )
 
@@ -86,7 +86,7 @@ def adduser(author, cmd):
         return "[!] Usage : !adduser <name> <student_id> <baekjoon_id>"
     # !adduser <이름> <학번> <백준 아이디>
 
-    dc_id = author == "admin" if author else args[4]
+    dc_id = author if author != "admin" else args[4]
     name = args[1]
     s_id = args[2]
     bj_id = args[3]
@@ -106,8 +106,8 @@ def showuserinfo(author):
 
     try:
         sql_result = sql_exe(sql)
-        print(sql_result)
-
+        item_dir = show_items(sql_result[0]['items'])
+        
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
         userinfo = f"""discord_id : {sql_result[0]['discord_id']}
@@ -117,7 +117,13 @@ def showuserinfo(author):
         your steps on today : {sql_result[0]['daily_steps']}
         your point : {sql_result[0]['point']}
         your location : {sql_result[0]['map_location']}
-        items : {sql_result[0]['items']}
+        **- items**
+        {"STEP":20}|{item_dir['STEP']}
+        {"SNAKE":20}|{item_dir['SNAKE']}
+        {"STUN":20}|{item_dir['STUN']}
+        {"ASSASSIN":20}|{item_dir['ASSASSIN']}
+        {"REDEMPTION":20}|{item_dir['REDEMPTION']} 
+        
         **- BAEKJOON INFO**
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
@@ -426,3 +432,21 @@ def unlock(author):
     # 그 외의 에러
     else:
         return "[!] Status Error: Call the Admins"
+
+def show_items(items_list):
+    item_dir = {"STEP" : 0,
+    "SNAKE" : 0,
+    "STUN" : 0,
+    "ASSASSIN" : 0,
+    "REDEMPTION" : 0,
+    "CAFFEINE" : 0,
+    "BOMB" : 0,
+    "RED BULL" : 0
+    }
+    if items_list != None:    
+        items_list = items_list.rstrip(';')
+        items = items_list.split(';')
+        for item in items:
+            item_dir[item] += 1
+        
+    return item_dir
