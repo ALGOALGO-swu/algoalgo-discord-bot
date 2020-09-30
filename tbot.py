@@ -11,6 +11,7 @@ import discord
 import os
 import asyncio
 import itemlists
+import algoalgo_map
 
 client = discord.Client()
 
@@ -103,6 +104,44 @@ async def on_message(message):
                 return
 
             elif user_res2 == "STEP": # STEP SKIP
+                #성공
+                result, feature, daily = step(message.author)
+
+                if feature == 2 : # 뱀
+                    embed = discord.Embed(title="Snake!",description="do you want to run? YES or NO")
+                    embed.add_field(name='**SNAKE**',value='snake가 있을 시 YES 없는 경우 NO',inline=False)
+                    await message.channel.send(embed=embed)
+
+                    def use(mes):
+                        return mes.author == message.author and mes.channel and channel
+                    try:
+                        msg = await client.wait_for('message',timeout=10.0, check=use) 
+                    except asyncio.TimeoutError:
+                        embed = discord.Embed(title="TIME OUT",description="oh you don't want it? oKay... BYE!")
+                        await message.channel.send(embed=embed)
+                        return
+                    else:
+                        # 사용자 입력값 검사
+                        if msg.content == "NO": 
+                            result2 = snake(message.author)
+                            await message.channel.send(result)
+                        else:
+                            embed = discord.Embed(title="당신은 무사!",description="뱀을 피하고 잘 도착!")
+                            await message.channel.send(embed=embed)
+                            return
+
+                elif feature == 1: # 1이 사다리
+                    embed = discord.Embed(title="일반 칸",description="잘 도착했네요")
+                    await message.channel.send(embed=embed)
+                    return
+                    
+
+                elif feature == 0: # 0이 일반
+                    embed = discord.Embed(title="사다리 칸",description="축하해요 사다리 칸에 도착했네요")
+                    await message.channel.send(embed=embed)
+                    return
+
+
                 result2 = itemlists.updateitem(str(message.author),"STEP;")
                 await message.channel.send(result2)
                 return
