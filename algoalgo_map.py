@@ -176,7 +176,6 @@ def showmap(author):
 
 
             #STEP-3
-            status = sql_result[0]['status']
             if sql_result[0]['status'] == 1 :
 
                 #STEP-4
@@ -201,6 +200,8 @@ def showmap(author):
                 if map_sql_result[0]['feature'] == 3 :
                     # LocFeatureInfo = "**BOSS**🧟‍♀️"
                     return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+            else:
+                return f"[*] 문제를 푸셔야합니다.", 0, 0
 
         except Exception as ex:
             return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
