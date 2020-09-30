@@ -191,17 +191,16 @@ def showmap(author):
                 if map_sql_result[0]['feature'] == 1 :
                     # map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
                     # sql_update(map_location_sql2)
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature']
+                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
                 if map_sql_result[0]['feature'] == 2 :
                     # LocFeatureInfo = "**SNAKE**🐍"
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature']
+                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
                     
                 if map_sql_result[0]['feature'] == 3 :
                     # LocFeatureInfo = "**BOSS**🧟‍♀️"
-                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature']
-
+                    return f"[*] Successfully updataed data about **{author}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
         except Exception as ex:
             return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
@@ -210,20 +209,3 @@ def showmap(author):
 
 
 
-
-            
-        
-
-
-
-    def step_check(author):
-    sql = f"select * from member where discord_id='{str(author)}'"
-    try:
-        sql_result = sql_exe(sql)
-        print(sql_result)
-        dailyinfo = f"""
-        오늘 남은 steps : {sql_result[0]['daily_steps']}
-        """
-        return f"{author}의 daily_stops check 성공", dailyinfo
-    except Exception as ex:
-        return f"error!\n[무슨에러?]: {ex}"
