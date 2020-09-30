@@ -163,8 +163,9 @@ async def on_message(message):
             else:
                 await message.channel.send("포인트가 부족합니다. 구매를 종료합니다")
 
-client.run(os.environ['discord-token'])
-
 sched = AsyncIOScheduler()
 sched.add_job(db_refresh, 'cron', minute=15)
 sched.start()
+
+client.run(os.environ['discord-token'])
+
