@@ -51,6 +51,7 @@ def sql_exe(query, *args):
         db_conn.commit()
         db_conn.close()
 
+        print(result)
         return result
 
     except Exception as ex:
