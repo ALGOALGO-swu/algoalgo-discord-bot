@@ -50,7 +50,7 @@ def buy_item(author, cmd): #!buy_item <아이템> <개수>
     sql2 = f"update member set point = point-{item_price} where discord_id='{str(author)}'"
     try:
         algoalgo_sql.sql_update(sql, gogo)
-        algoalgo_sql.sql_exe(sql2)
+        algoalgo_sql.sql_update(sql2)
     except Exception as ex:
         return f"[!] buy item error!\n[INFO]: {ex}"
     return f"[+] success updating item into db: {author}\n구매 성공! {item_price} 포인트 차감되었습니다"

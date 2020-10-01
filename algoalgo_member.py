@@ -31,14 +31,15 @@ def adduser(author, cmd):
 
 
 def showuserinfo(author):
-    sql = f"select * from member where discord_id='{str(author)}'"
+    sql = f"select * from member where discord_id='{str(author)}';"
 
     try:
         sql_result = algoalgo_sql.sql_exe(sql)
+
         item_dir = show_items(sql_result[0]['items'])
-        print(1)
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
         # items : 아이템 보유 개수 정리해서 출력
+
         userinfo = f"""discord_id : {sql_result[0]['discord_id']}
         name : {sql_result[0]['name']}
         **- GAME INFO**
@@ -57,29 +58,9 @@ def showuserinfo(author):
         baekjoon id : {sql_result[0]['baekjoon_id']}
         Continuous Days of Mission : {sql_result[0]['bj_solv_contd']}
         """
-        print(2)
         return f"[*] Successfully Inquires data about {author}", userinfo
     except Exception as ex:
-        print(ex)
         return f"[!] An error occurs while finding user({author}) in db....\n[INFO] error : {ex}", None
-
-
-
-def truncate(cmd):
-    args = cmd.split()
-    table = args[1]
-
-    if table == "achievement":
-        return f"[!] ERROR : You can't truncate table {table}"
-
-    sql = f"truncate table {table};"
-
-    try:
-        algoalgo_sql.sql_update(sql)
-    except Exception as ex:
-        return f"[!] An error occurs while truncating table {table}....\n[INFO] error : {ex}"
-
-    return f"[-] success truncating table .... {table}"
 
 
 def fill_str_with_space(input_s="", max_size=27, fill_char=" "):
@@ -300,6 +281,8 @@ def daily_baekjoon(author, cmd):
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
     # 이미 인증된 문제
+    if solvedlist == None:
+        solvedlist = ""
     if pid in solvedlist.split(';')[:-1]:
         return "[!] Already Registered Problem"
 
@@ -365,19 +348,23 @@ def unlock(author):
         return "[!] Status Error: Call the Admins"
 
 def show_items(items_list):
-    item_dir = {"STEP" : 0,
-    "SNAKE" : 0,
-    "STUN" : 0,
-    "ASSASSIN" : 0,
-    "REDEMPTION" : 0,
-    "CAFFEINE" : 0,
-    "BOMB" : 0,
-    "RED BULL" : 0
-    }
-    if items_list != None:    
-        items_list = items_list.rstrip(';')
-        items = items_list.split(';')
-        for item in items:
-            item_dir[item] += 1
-        
-    return item_dir
+    try:
+        item_dir = {"STEP" : 0,
+        "SNAKE" : 0,
+        "STUN" : 0,
+        "ASSASSIN" : 0,
+        "REDEMPTION" : 0,
+        "CAFFEINE" : 0,
+        "BOMB" : 0,
+        "RED BULL" : 0
+        }
+        if items_list != None:    
+            items_list = items_list.rstrip(';')
+            items = items_list.split(';')
+            for item in items:
+                if len(item) == 0:
+                    continue
+                item_dir[item] += 1
+        return item_dir
+    except Exception as ex:
+        raise ex
