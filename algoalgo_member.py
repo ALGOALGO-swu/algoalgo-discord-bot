@@ -1,81 +1,10 @@
-import pymysql
 import unicodedata
 import requests
 from bs4 import BeautifulSoup
 from random import randint
 
-import os
 import algoalgo_bj_crawling
-
-def sql_update(query, *args):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ['db_pass'],
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if args == None:
-            cursor.execute(query)
-        else:
-            cursor.execute(query, args)
-
-        db_conn.commit()
-        db_conn.close()
-
-    except Exception as ex:
-        raise ex
-
-
-def sql_update_many(query, *args):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ['db_pass'],
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if args == None:
-            cursor.executemany(query)
-        else:
-            print(query, args)
-            cursor.executemany(query, args[0])
-
-        db_conn.commit()
-        db_conn.close()
-
-    except Exception as ex:
-        raise ex
-
-
-def sql_exe(query, *args):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ['db_pass'],
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        cursor.execute(query, args)
-
-        result = cursor.fetchall()
-
-        db_conn.commit()
-        db_conn.close()
-
-        return result
-
-    except Exception as ex:
-        raise ex
+import algoalgo_sql
 
 
 def adduser(author, cmd):
@@ -94,7 +23,7 @@ def adduser(author, cmd):
 
     sql = "insert into member (discord_id, student_id, name, baekjoon_id, bj_solved) value (%s, %s, %s, %s, %s);"
     try:
-        sql_update(sql, dc_id, s_id, name, bj_id, bj_solved)
+        algoalgo_sql.sql_update(sql, dc_id, s_id, name, bj_id, bj_solved)
     except Exception as ex:
         return f"[!] An error occurs while adding user({author}) into db....\n[INFO] error : {ex}"
 
@@ -105,7 +34,7 @@ def showuserinfo(author):
     sql = f"select * from member where discord_id='{str(author)}'"
 
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
         item_dir = show_items(sql_result[0]['items'])
         print(1)
         # status : 1, 2, 3에 맞는 값을 각각 문자열로 풀어서 출력
@@ -146,7 +75,7 @@ def truncate(cmd):
     sql = f"truncate table {table};"
 
     try:
-        sql_update(sql)
+        algoalgo_sql.sql_update(sql)
     except Exception as ex:
         return f"[!] An error occurs while truncating table {table}....\n[INFO] error : {ex}"
 
@@ -171,7 +100,7 @@ def addpoint(cmd):
 
     # 업적 정보 확인
     try:
-        result = sql_exe("SELECT points, achive_name FROM achievement WHERE id = %s", args[1])[0]
+        result = algoalgo_sql.sql_exe("SELECT points, achive_name FROM achievement WHERE id = %s", args[1])[0]
     except Exception as ex:
         return f"[!] An error occurs while check the db....\n[INFO] error : {ex}"
 
@@ -182,8 +111,8 @@ def addpoint(cmd):
     if args[2].find('#') == -1: # 학번 입력시
         sql = "UPDATE member SET point = point+%s WHERE student_id = %s;"
         try:
-            sql_update(sql, point, args[2])
-            name = sql_exe("SELECT discord_id FROM member WHERE student_id = %s", args[2])[0]['discord_id']
+            algoalgo_sql.sql_update(sql, point, args[2])
+            name = algoalgo_sql.sql_exe("SELECT discord_id FROM member WHERE student_id = %s", args[2])[0]['discord_id']
         except Exception as ex:
             return f"[!] An error occurs while update the point into db....\n[INFO] error : {ex}"
 
@@ -191,7 +120,7 @@ def addpoint(cmd):
         name = args[2]
         try:
             sql = "UPDATE member SET point = point+%s WHERE discord_id = %s;"
-            sql_update(sql, point, name)
+            algoalgo_sql.sql_update(sql, point, name)
         except Exception as ex:
             return f"[!] An error occurs while update the point into db....\n[INFO] error : {ex}"
 
@@ -200,16 +129,16 @@ def addpoint(cmd):
 
 def refresh():
     try:
-        sql_update("UPDATE member SET daily_steps = 0")  # 일일 문제풀이 가능 횟수
-        sql_update("UPDATE member SET status = 0 WHERE status = -1")  # Stun 초기화
+        algoalgo_sql.sql_update("UPDATE member SET daily_steps = 0")  # 일일 문제풀이 가능 횟수
+        algoalgo_sql.sql_update("UPDATE member SET status = 0 WHERE status = -1")  # Stun 초기화
 
         # 연속 업적 달성 확인
-        sql_update("UPDATE member SET bj_solv_contd = bj_solv_contd+1 WHERE bj_today <> 0")
-        sql_update("UPDATE member SET bj_solv_contd = 0 WHERE bj_today = 0")
-        sql_update("UPDATE member SET bj_today = 0")
+        algoalgo_sql.sql_update("UPDATE member SET bj_solv_contd = bj_solv_contd+1 WHERE bj_today <> 0")
+        algoalgo_sql.sql_update("UPDATE member SET bj_solv_contd = 0 WHERE bj_today = 0")
+        algoalgo_sql.sql_update("UPDATE member SET bj_today = 0")
 
         # 연속 업적 달성자 업적 반영
-        sids = sql_exe("SELECT student_id, bj_solv_contd FROM member WHERE bj_solv_contd IN (5, 14, 30)")
+        sids = algoalgo_sql.sql_exe("SELECT student_id, bj_solv_contd FROM member WHERE bj_solv_contd IN (5, 14, 30)")
         for sid in sids:
             # 달성 업적 확인
             if sid['bj_solv_contd'] == 5:
@@ -230,7 +159,7 @@ def refresh():
 def list_achievement():
     # DB에서 업적 목록 확인
     try:
-        achlist = sql_exe("SELECT description, points FROM achievement WHERE is_hidden = 0")
+        achlist = algoalgo_sql.sql_exe("SELECT description, points FROM achievement WHERE is_hidden = 0")
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
@@ -281,7 +210,7 @@ def problem_rank_update():
         for problem in get_problem_list(rank):
             vals.append([problem, rank])
         try:
-            sql_update_many(sql, vals)
+            algoalgo_sql.sql_update_many(sql, vals)
         except Exception as ex:
             print(ex)
             return f"[!] An error occurs while updating problem ranks into db....\n[INFO] error : {ex}"
@@ -311,7 +240,7 @@ def random_bj(author, cmd):
 
     # 요청자 BOJ id 및 푼 문제 목록 확인
     try:
-        bojid = sql_exe("SELECT baekjoon_id FROM member WHERE discord_id = %s", author)[0]['baekjoon_id']
+        bojid = algoalgo_sql.sql_exe("SELECT baekjoon_id FROM member WHERE discord_id = %s", author)[0]['baekjoon_id']
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
     solved = get_solved(bojid)
@@ -335,7 +264,7 @@ def random_bj(author, cmd):
     # DB에서 해당 티어 문제 목록 가져오기
     sql = "SELECT id FROM solved_rank WHERE rank >= %s and rank < %s;"
     try:
-        result = sql_exe(sql, startfrom, startfrom+5)
+        result = algoalgo_sql.sql_exe(sql, startfrom, startfrom+5)
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
     candidate = []
@@ -366,7 +295,7 @@ def daily_baekjoon(author, cmd):
 
     # 인증된 푼 문제 목록
     try:
-        solvedlist = sql_exe("SELECT bj_solved FROM member WHERE discord_id = %s", author)[0]['bj_solved']
+        solvedlist = algoalgo_sql.sql_exe("SELECT bj_solved FROM member WHERE discord_id = %s", author)[0]['bj_solved']
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
@@ -376,7 +305,7 @@ def daily_baekjoon(author, cmd):
 
     # 아직 풀지 않은 문제
     try:
-        solvedlist_db = get_solved(sql_exe("SELECT baekjoon_id FROM member WHERE discord_id = %s", author)[0]['baekjoon_id'])
+        solvedlist_db = get_solved(algoalgo_sql.sql_exe("SELECT baekjoon_id FROM member WHERE discord_id = %s", author)[0]['baekjoon_id'])
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
     if pid not in solvedlist_db:
@@ -385,9 +314,9 @@ def daily_baekjoon(author, cmd):
     # 신규 1일 1백준 인증 및 add point
     solvedlist += (str(pid) + ';')
     try:
-        sql_update("UPDATE member SET bj_solved = %s WHERE discord_id = %s", solvedlist, author)
+        algoalgo_sql.sql_update("UPDATE member SET bj_solved = %s WHERE discord_id = %s", solvedlist, author)
         addpoint(f"!addpoint 11 {author}")
-        sql_update("UPDATE member SET bj_today = 1 WHERE discord_id = %s", author)
+        algoalgo_sql.sql_update("UPDATE member SET bj_today = 1 WHERE discord_id = %s", author)
     except Exception as ex:
         return f"[!] An error occurs while update certification into db....\n[INFO] error : {ex}"
 
@@ -395,7 +324,7 @@ def daily_baekjoon(author, cmd):
 
 def unlock(author):
     try:
-        memberinfo = sql_exe("SELECT status, map_location, baekjoon_id, bj_solved FROM member WHERE discord_id = %s", author)[0]
+        memberinfo = algoalgo_sql.sql_exe("SELECT status, map_location, baekjoon_id, bj_solved FROM member WHERE discord_id = %s", author)[0]
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
@@ -410,14 +339,14 @@ def unlock(author):
     if memberinfo['status'] == 0:
         # 풀어야 하는 문제 확인
         try:
-            pid = sql_exe("SELECT baekjoon_no FROM map WHERE id = %s", memberinfo['map_location'])[0]['baekjoon_no']
+            pid = algoalgo_sql.sql_exe("SELECT baekjoon_no FROM map WHERE id = %s", memberinfo['map_location'])[0]['baekjoon_no']
         except Exception as ex:
             return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
         # 정상 해제 시도
         if pid in get_solved(memberinfo['baekjoon_id']):
             try:
-                sql_update("UPDATE member SET status = 1 WHERE baekjoon_id = %s", memberinfo['baekjoon_id'])
+                algoalgo_sql.sql_update("UPDATE member SET status = 1 WHERE baekjoon_id = %s", memberinfo['baekjoon_id'])
             except Exception as ex:
                 return f"[!] An error occurs while update status into db....\n[INFO] error : {ex}"
 

@@ -1,50 +1,6 @@
 import pymysql
 import os
-
-def sql_update(query, *args):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ["db_pass"], 
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )   
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if args == None:
-            cursor.execute(query)
-        else:
-            cursor.execute(query, args)
-
-        db_conn.commit()
-        db_conn.close()
-    
-    except Exception as ex:
-        raise ex
-
-def sql_exe(query):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ["db_pass"], 
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )   
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        cursor.execute(query)
-
-        result = cursor.fetchall()            
-
-        db_conn.commit()
-        db_conn.close()
-
-        return result 
-    
-    except Exception as ex:
-        raise ex
+import algoalgo_sql
 
 #     getPlayers() #해당 칸에 위치한 플레이어 
 #     getItems()  #해당 칸에 위치한 아이템
@@ -67,7 +23,7 @@ def setmap(cmd):
 
     sql = "insert into map (id, feature, ahead_to) value (%s, %s, %s);"
     try:
-        sql_update(sql, int(id), int(feature), int(ahead_to))
+        algoalgo_sql.sql_update(sql, int(id), int(feature), int(ahead_to))
     except Exception as ex:
         return f"[!] An error occurs while adding map data into db....\n[INFO] error : {ex}"
     
@@ -82,7 +38,7 @@ def getLocType(cmd):
     sql = f"select * from map where id='{nowLoc}'"
 
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
         print(sql_result)
      
         if sql_result[0]['feature'] == 0 :
@@ -112,7 +68,7 @@ def getPlayers(cmd):
     sql = f"select name from member where map_location='{nowLoc}'"
 
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
         print(sql_result)
         
         Locinfo = ""
@@ -130,7 +86,7 @@ def showmap(author):
     sql = f"select map_location from member where discord_id='{str(author)}'"
 
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
         print(sql_result)
      
         Locinfo = sql_result[0]['map_location']
@@ -146,15 +102,15 @@ def snake(discord_id):
     sql = f"select * from member where discord_id='{str(discord_id)}'"
     
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
 
         map_sql = f"select * from map where id='{sql_result[0]['map_location']}'"
-        map_sql_result = sql_exe(map_sql)
+        map_sql_result = algoalgo_sql.sql_exe(map_sql)
 
         #STEP 6-2 는 메세지로 알려주기
 
         map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
-        sql_update(map_location_sql2)
+        algoalgo_sql.sql_update(map_location_sql2)
         return f"[*] Successfully updataed data about **{discord_id}** 's location on the snake map"
 
 
@@ -171,11 +127,11 @@ def snake(discord_id):
 def step(discord_id):
     sql = f"select * from member where discord_id='{str(discord_id)}'"
     try:
-        sql_result = sql_exe(sql)
+        sql_result = algoalgo_sql.sql_exe(sql)
 
         #STEP-2
         daily_step_sql = f"update member set daily_steps ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
-        sql_update(daily_step_sql)
+        algoalgo_sql.sql_update(daily_step_sql)
 
 
         #STEP-3
@@ -183,16 +139,16 @@ def step(discord_id):
 
             #STEP-4
             map_location_sql = f"update member set map_location ='{sql_result[0]['map_location'] + 1}' where discord_id='{str(discord_id)}'"
-            sql_update(map_location_sql)
+            algoalgo_sql.sql_update(map_location_sql)
 
             #STEP-5
             map_sql = f"select * from map where id='{int(sql_result[0]['map_location'])+1}'"
-            map_sql_result = sql_exe(map_sql)
+            map_sql_result = algoalgo_sql.sql_exe(map_sql)
 
             
             if map_sql_result[0]['feature'] == 1 :
                 map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
-                sql_update(map_location_sql2)
+                algoalgo_sql.sql_update(map_location_sql2)
                 return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
             if map_sql_result[0]['feature'] == 2 :

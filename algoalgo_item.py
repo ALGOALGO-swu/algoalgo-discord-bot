@@ -1,57 +1,13 @@
 import pymysql
 import os
 from collections import Counter
-
-def sql_update(query, *args):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ['db_pass'], 
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )   
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if args == None:
-            cursor.execute(query)
-        else:
-            cursor.execute(query, args)
-
-        db_conn.commit()
-        db_conn.close()
-    
-    except Exception as ex:
-        raise ex
-
-def sql_exe(query):
-    db_conn = pymysql.connect(
-        user='staff', 
-        passwd=os.environ['db_pass'], 
-        host='34.64.120.154', 
-        db='algoalgo', 
-        charset='utf8'
-    )   
-
-    cursor = db_conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        cursor.execute(query)
-
-        result = cursor.fetchall()            
-
-        db_conn.commit()
-        db_conn.close()
-
-        return result 
-    
-    except Exception as ex:
-        raise ex
+import algoalgo_sql
 
 def testupdate(author):
     sql = f"update member set items = 'ASSASSIN;STUN;STEP;STEP;ASSASSIN;SNAKE;SNAKE;REDEMPTION;REDEMPTION;STUN;' where discord_id='{str(author)}'"
     #sql = f"select items from member where discord_id='{str(author)}'"
     try:
-        result=sql_exe(sql)
+        result=algoalgo_sql.sql_exe(sql)
         #return "[+]테스트 10점 넣어줌"
         return f"[+]db item update '{author}'"
     except Exception as ex:
@@ -61,7 +17,7 @@ def testupdate(author):
 def checkMember(person):
     sql = f"select name from member where discord_id='{str(person)}'"
     try:
-        sql_result=sql_exe(sql)
+        sql_result=algoalgo_sql.sql_exe(sql)
         #print(sql_result)
         return sql_result
     except Exception as ex:
@@ -71,7 +27,7 @@ def checkMember(person):
 def setStun(person):
     sql = f"update member set status = -1 where discord_id='{str(person)}'"
     try:
-        sql_exe(sql)
+        algoalgo_sql.sql_exe(sql)
         print("[+] success stun")
         return f"[+] success stun '{str(person)}'"
     except Exception as ex:
@@ -81,7 +37,7 @@ def setStun(person):
 def setRedemption(author):
     sql = f"update member set status = 1 where discord_id='{str(author)}'"
     try:
-        sql_exe(sql)
+        algoalgo_sql.sql_exe(sql)
         print("[+] success Redemption")
         return f"[+] success Redemption '{str(author)}'"
     except Exception as ex:
@@ -91,7 +47,7 @@ def setRedemption(author):
 def updateitem(author,item):
     sql = f"select items from member where discord_id='{str(author)}'"
     try:
-        sql_result=sql_exe(sql)
+        sql_result=algoalgo_sql.sql_exe(sql)
         #print(sql_result)
         sql_result2=sql_result[0]['items'].replace(item,"",1)
         #print(sql_result2)
@@ -100,7 +56,7 @@ def updateitem(author,item):
 
     sql2 = f"update member set items ='{str(sql_result2)}' where discord_id='{str(author)}'"    
     try:
-        sql_exe(sql2)
+        algoalgo_sql.sql_exe(sql2)
     except Exception as ex:
         return f"[!] error update '{str(author)}' DB"
     
@@ -110,13 +66,13 @@ def updateitem(author,item):
 def setAssassin(person):
     sql = f"select map_location from member where discord_id='{str(person)}'"
     try:
-        sql_result=sql_exe(sql)
+        sql_result=algoalgo_sql.sql_exe(sql)
     except Exception as ex:
         return f"[!] error select '{str(person)}' DB"
 
     sql2 = f"update member set map_location = {int(sql_result[0]['map_location'])-1} where discord_id='{str(person)}'"    
     try:
-        sql_exe(sql2)
+        algoalgo_sql.sql_exe(sql2)
     except Exception as ex:
         return f"[!] error update '{str(person)}' DB"
     return f"[+] success use item '{person}', Assasin" 
@@ -125,7 +81,7 @@ def setAssassin(person):
 def useitem(author):
     sql = f"select items from member where discord_id='{str(author)}'"
     try:
-        sql_result=str(sql_exe(sql))
+        sql_result=str(algoalgo_sql.sql_exe(sql))
         # 인덱스. 아이템명 : 소유 개수 형식의 리스트 출력해야함
         itemlist=sql_result.split(";") # 중복있는 아이템목록
         count = Counter(itemlist) # 유저의 아이템 종류 수
