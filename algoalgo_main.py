@@ -20,7 +20,7 @@ async def on_ready():
     print("디스코드봇 ID:" + str(client.user.id))
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("GM on Board (feat. algorithm)"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("테스트"))
 
 @client.event
 async def db_refresh():
