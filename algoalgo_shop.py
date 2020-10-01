@@ -5,7 +5,6 @@ def sql_update(query, *args):
     db_conn = pymysql.connect(
         user='staff', 
         passwd=os.environ['db_pass'],
-        passwd='sleepy-algoalgo-staffs',
         host='34.64.120.154', 
         db='algoalgo', 
         charset='utf8'
