@@ -28,6 +28,11 @@ def buy_item(author, cmd): #!buy_item <아이템> <개수>
     if len(args) != 3:
         return "Usage: !buyitem <item name> <number>"
     
+    if str(type(args[1])) != "<class 'str'>":
+        return "Usage: !buyitem <item name> <number>"
+    if str(type(args[2])) != "<class 'int'>":
+        return "Usage: !buyitem <item name> <number>"
+
     item = args[1]
     cnt = int(args[2])
     item_price = int(PRICE[ITEMS.index(item)])*cnt

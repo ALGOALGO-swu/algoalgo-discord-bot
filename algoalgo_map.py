@@ -1,6 +1,7 @@
 import pymysql
 import os
 import algoalgo_sql
+import algoalgo_error
 
 #     getPlayers() #해당 칸에 위치한 플레이어 
 #     getItems()  #해당 칸에 위치한 아이템
@@ -125,17 +126,16 @@ def snake(discord_id):
 
 # STEP
 def step(discord_id):
-    sql = f"select * from member where discord_id='{str(discord_id)}'"
     try:
+        sql = f"select * from member where discord_id='{str(discord_id)}'"
         sql_result = algoalgo_sql.sql_exe(sql)
 
         #STEP-2
         daily_step_sql = f"update member set daily_steps ='{sql_result[0]['daily_steps'] + 1}' where discord_id='{str(discord_id)}'"
         algoalgo_sql.sql_update(daily_step_sql)
 
-
         #STEP-3
-        if sql_result[0]['status'] == 1 :
+        if sql_result[0]['status'] == 1:
 
             #STEP-4
             map_location_sql = f"update member set map_location ='{sql_result[0]['map_location'] + 1}' where discord_id='{str(discord_id)}'"
@@ -145,23 +145,42 @@ def step(discord_id):
             map_sql = f"select * from map where id='{int(sql_result[0]['map_location'])+1}'"
             map_sql_result = algoalgo_sql.sql_exe(map_sql)
 
-            
             if map_sql_result[0]['feature'] == 1 :
                 map_location_sql2 = f"update member set map_location ='{map_sql_result[0]['ahead_to']}' where discord_id='{str(discord_id)}'"
                 algoalgo_sql.sql_update(map_location_sql2)
-                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+                return f"[*] Successfully updated data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
-            if map_sql_result[0]['feature'] == 2 :
-                # LocFeatureInfo = "**SNAKE**🐍"
-                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+            # if map_sql_result[0]['feature'] == 2 :
+            #     # LocFeatureInfo = "**SNAKE**🐍"
+            #     return f"[*] Successfully updated data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
 
-                
-            if map_sql_result[0]['feature'] == 3 :
-                # LocFeatureInfo = "**BOSS**🧟‍♀️"
-                return f"[*] Successfully updataed data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+            # if map_sql_result[0]['feature'] == 3 :
+            #     # LocFeatureInfo = "**BOSS**🧟‍♀️"
+            #     return f"[*] Successfully updated data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+
+            return f"[*] Successfully updated data about **{discord_id}** 's location on the map", map_sql_result[0]['feature'], 3 - (sql_result[0]['daily_steps'] + 1)
+
+
         else:
+            # raise 해야함
             return f"[*] 문제를 푸셔야합니다.", 0, 0
 
     except Exception as ex:
+        #raise 해야함 
         return f"[!] An error occurs while finding **{discord_id}** 's location on the map in db....\n[INFO] error : {ex}",0,0
+
+
+#step - initialize status
+def init_status(author):
+    sql = "update member set status = 0 where discord_id = %s;"
+
+    try:
+        algoalgo_sql.sql_update(sql, str(author))
+        print(f"[*] Successfully init status data about {author}")
+
+    except Exception as ex:
+        e_msg = f"[!] An error occurs while initializing status about {author} in db....\n[INFO] error : {ex}"
+        raise algoalgo_error.UserDefinedException(e_msg)
+
+
 

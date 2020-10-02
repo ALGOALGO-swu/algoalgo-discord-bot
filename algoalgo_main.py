@@ -9,10 +9,10 @@ import algoalgo_member
 import algoalgo_shop
 import algoalgo_item
 import algoalgo_map
+import algoalgo_error
 
 client = discord.Client()
 admin = 742625793276116992
-
 
 @client.event
 async def on_ready():
@@ -211,134 +211,184 @@ async def on_message(message):
             await message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the roles INFO ==""", description = f""" the role #{i} :: {message.author.roles[i].name}\n the role #{i}'s' id :: {message.author.roles[i].id} """, color = 0x6b9560))
     
 
-    #admin ::  printing all_role id 
+    #!step
     if message.content.startswith('!step'):
         result, feature, daily = algoalgo_map.step(message.author)
         # embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo, color = 0x6b9560)
         await message.channel.send(result)
         await message.channel.send(embed=embed)
 
-    if message.content.startswith('!useitem'):
-        result = algoalgo_item.useitem(str(message.author))
 
-        #아이템 목록 출력하는 칸임
-        if result == 0:
-            embed = discord.Embed(title="NO Item",description="please buy item first")
+
+    #################################
+    # item 관련 명령어
+    # 담당자 : 2018111321 김선미
+    # 보조 : 2018111339 신유림
+    #################################
+    # !useitem 
+    if message.content.startswith('!useitem'):
+        try:
+            result = algoalgo_item.useitem(str(message.author))
+
+            #아이템 목록 출력하는 칸임
+            if result == 0:
+                embed = discord.Embed(title="**NO Item**",description="please buy item first")
+                await message.channel.send(embed=embed)
+                return
+
+            item_msg = f"""```
+[idx] item_name | values
+[0] STEP        | {result['STEP']}
+[1] STUN        | {result['STUN']}
+[2] ASSASSIN    | {result['ASSASSIN']}
+[3] REDEMPTION  | {result['REDEMPTION']} ```"""
+
+            embed = discord.Embed(title="Ha ha, What do you want?", description="15초 안에 아이템 번호를 입력해주세요")
+            embed.add_field(name='**사용법**',value='**사용하고자 할 아이템 번호를 입력해주세요. 단, assassin, stun, bomb는 번호와 유저이름을 입력**',inline=False)
+            embed.add_field(name='**예시**',value='**`1`, `2`,`3`,`1 kim`,`3 park`**',inline=False)
+            embed.add_field(name='**보유중인 아이템**', value = item_msg, inline=False)
+            channel = message.channel
+            await message.channel.send(embed=embed)  
+        except Exception as ex:
+            embed = discord.Embed(title="Error",description=f"[!] Error in listing Items... \nError : {ex}")
             await message.channel.send(embed=embed)
             return
-        else:
-            await message.channel.send("item 목록")
-            await message.channel.send(result)
-            
-
-        embed = discord.Embed(title="Ha ha, What do you want?", description="5초 안에 아이템 번호를 입력해주세요")
-        embed.add_field(name='**사용법**',value='**사용하고자 할 아이템 번호를 입력해주세요. 단, assassin, stun, bomb는 번호와 유저이름을 입력**',inline=False)
-        embed.add_field(name='**예시**',value='**`1`, `2`,`3`,`1 kim`,`3 park`**',inline=False)
-        channel = message.channel
-        await message.channel.send(embed=embed)
         
         def buy(mes):
             return mes.author == message.author and mes.channel and channel
         try:
-            msg = await client.wait_for('message',timeout=10.0, check=buy) 
+            msg = await client.wait_for('message',timeout=15.0, check=buy) 
         except asyncio.TimeoutError:
             embed = discord.Embed(title="TIME OUT",description="oh you don't need it? oKay... BYE!")
             await message.channel.send(embed=embed)
             return
         else:
-            # 사용자 입력값 검사
-            if len(msg.content) < 2: # 입력값 검사
-                 user_res = int(msg.content) 
-                 #await message.channel.send("input")
+            msg_content = msg.content.split()
+            user_res = ""
+            user_atk = ""
 
-            else:
-                # await message.channel.send("input check")
-                tmp = msg.content.split() #입력값 공백 기준으로 나누기
-                user_res = int(tmp[0]) # user_res = 아이템 인덱스
-                user_atk = tmp[1] # user_atk = 공격받는 유저
+            item_list = ['STEP', 'STUN', 'ASSASSIN', 'REDEMPTION']
+            # 사용자 입력값 검사
+            try:
+                if len(msg_content) != 1 and len(msg_content) != 2:
+                    e_msg = "Invalid Input\nUsage: <item_idx> <target_discord_id>"
+                    raise algoalgo_error.UserDefinedException(e_msg)
+                    
+                # 아이템 인덱스가 제대로 들어오는지
+                user_res = int(msg_content[0]) 
                 
-                # 받은 값 중 올바른 사용자를 입력받았는지 검사해야함
-                check_user = algoalgo_item.checkMember(user_atk)
-                #print(check_user)
-                if not check_user:
-                    embed = discord.Embed(title="Check userID",description=f"there isn't name '{user_atk}'")
+                # 추가적인 arg - 제대로 된 target id가 들어오는지 
+                if len(msg_content) == 2: 
+                    user_atk = msg_content[1]
+
+                    check_user = algoalgo_item.checkMember(user_atk)
+                    if not check_user:
+                        e_msg = f"No User named '{user_atk}'"
+                        raise algoalgo_error.UserDefinedException(e_msg)
+                    
+                if user_res not in [0, 1, 2, 3]:
+                    e_msg = "Invalid Item indicies"
+                    raise algoalgo_error.UserDefinedException(e_msg)
+                
+                if result[item_list[user_res]] == 0:
+                    e_msg = "Not enough value to use"
+                    raise algoalgo_error.UserDefinedException(e_msg)
+                    
+            except Exception as ex:
+                    embed = discord.Embed(title="Error",description=f"[!] Input value is not valid... \nError : {ex}")
                     await message.channel.send(embed=embed)
                     return
+
+
+            try: # 아이템 업데이트 진행에 대한 try-except
+                user_res2 = item_list[user_res] # user_res2 = 아이템 명
             
+                if user_res2 == 'STUN' :
+                    if len(msg_content) != 2:
+                        e_msg = "No Target user in arg\nUsage : 1 <target_discord_id>"
+                        raise algoalgo_error.UserDefinedException(e_msg)
+                    
+                    # 상대방 status = -1 로 업데이트
+                    result2 = algoalgo_item.setStun(user_atk)
+                    # stun 없애기
+                    algoalgo_item.updateitem(str(message.author),"STUN;")
+                    await message.channel.send(result2)
+                    return
 
-            await message.channel.send(user_res)
-            user_res2 = result[user_res][0] # user_res2 = 아이템 명
-            #print(user_res2)
-            if user_res2 == 'STUN':
-                # 상대방 status = -1 로 업데이트
-                result2 = algoalgo_item.setStun(user_atk)
-                 # stun 없애기
-                algoalgo_item.updateitem(str(message.author),"STUN;")
-                await message.channel.send(result2)
-                return
+                if user_res2 == 'REDEMPTION':
+                    # 문제 못풀었을 때 이동 가능
+                    result2 = algoalgo_item.setRedemption(str(message.author))
+                    # redemption 없애기
+                    algoalgo_item.updateitem(str(message.author),"REDEMPTION;")
+                    await message.channel.send(result2)
+                    return
 
-            elif user_res2 == 'REDEMPTION':
-                # 문제 못풀었을 때 이동 가능
-                result2 = algoalgo_item.setRedemption(str(message.author))
-                # redemption 없애기
-                algoalgo_item.updateitem(str(message.author),"REDEMPTION;")
-                await message.channel.send(result2)
-                return
+                if user_res2 == 'ASSASSIN' and len(msg.content)>2 :
+                    # 상대방 뒤로 옮기기
+                    result2 = algoalgo_item.setAssassin(user_atk)
+                    # assassin 뒤로 옮기기
+                    algoalgo_item.updateitem(str(message.author),"ASSASSIN;")
+                    await message.channel.send(result2)
+                    return
 
-            elif user_res2 == 'ASSASSIN':
-                # 상대방 뒤로 옮기기
-                result2 = algoalgo_item.setAssassin(user_atk)
-                # assassin 뒤로 옮기기
-                algoalgo_item.updateitem(str(message.author),"ASSASSIN;")
-                await message.channel.send(result2)
-                return
+                # start STEP
+                if user_res2 == "STEP": 
+                    #성공
+                    result2, feature, daily = algoalgo_map.step(message.author)
+                    algoalgo_map.init_status(message.author)
 
-            elif user_res2 == "STEP": # STEP SKIP
-                #성공
-                result, feature, daily = algoalgo_map.step(message.author)
+                    if feature == 2 : # 뱀
+                        if not result.get('SNAKE'):
+                            result['SNAKE']=0
+                        embed = discord.Embed(title="Snake!",description="do you want to run? ")
+                        embed.add_field(name='사용법',value='snake가 있을 시 YES를 입력해주세요',inline=False)
+                        embed.add_field(name='보유량',value=f"snake :{result['SNAKE']}",inline=False)
 
-                if feature == 2 : # 뱀
-                    embed = discord.Embed(title="Snake!",description="do you want to run? YES or NO")
-                    embed.add_field(name='**SNAKE**',value='snake가 있을 시 YES 없는 경우 NO',inline=False)
-                    await message.channel.send(embed=embed)
-
-                    def use(mes):
-                        return mes.author == message.author and mes.channel and channel
-                    try:
-                        msg = await client.wait_for('message',timeout=10.0, check=use) 
-                    except asyncio.TimeoutError:
-                        embed = discord.Embed(title="TIME OUT",description="oh you don't want it? oKay... BYE!")
-                        await message.channel.send(embed=embed)
-                        return
-                    else:
-                        # 사용자 입력값 검사
-                        if msg.content == "NO": 
-                            result2 = algoalgo_map.snake(message.author)
-                            await message.channel.send(result)
-                        else:
-                            embed = discord.Embed(title="당신은 무사!",description="뱀을 피하고 잘 도착!")
+                        def use(mes):
+                            return mes.author == message.author and mes.channel and channel
+                        try:
+                            msg = await client.wait_for('message',timeout=10.0, check=use) 
+                        except asyncio.TimeoutError:
+                            embed = discord.Embed(title="TIME OUT",description="oh you don't want it? oKay... BYE!")
                             await message.channel.send(embed=embed)
                             return
+                        else:
+                            # 사용자 입력값 검사
+                            if msg.content == "YES": 
+                                embed = discord.Embed(title="성공!",description="뱀을 무사히 피했습니다!")
+                                await message.channel.send(embed=embed)
+                                return
 
-                elif feature == 1: # 1이 사다리
-                    embed = discord.Embed(title="일반 칸",description="잘 도착했네요")
-                    await message.channel.send(embed=embed)
-                    return
+                            else:
+                                embed = discord.Embed(title="이런!",description="뱀을 피하느라 밑으로 내려왔어요!")
+                                result2 = algoalgo_map.snake(message.author)
+                                await message.channel.send(result)
+                                return
+
+                    elif feature == 1: # 1이 사다리
+                        embed = discord.Embed(title="사다리 칸",description="축하해요 사다리 칸에 도착했네요")
+                        await message.channel.send(embed=embed)
+                        return
+                        
+
+                    elif feature == 0: # 0이 일반
+                        embed = discord.Embed(title="일반 칸",description="잘 도착했네요")
+                        await message.channel.send(embed=embed)
+                        return
                     
 
-                elif feature == 0: # 0이 일반
-                    embed = discord.Embed(title="사다리 칸",description="축하해요 사다리 칸에 도착했네요")
-                    await message.channel.send(embed=embed)
+                    result2 = algoalgo_item.updateitem(str(message.author),"STEP;")
+                    await message.channel.send(result2)
                     return
+                # end STEP
 
-
-                result2 = algoalgo_item.updateitem(str(message.author),"STEP;")
-                await message.channel.send(result2)
+                embed = discord.Embed(title="Check your answer",description=f"this is not right type '{user_res2}'")
+                await message.channel.send(embed=embed)
                 return
-
-            embed = discord.Embed(title="Check your answer",description=f"this is not right type '{user_res2}'")
-            await message.channel.send(embed=embed)
-            return
+            except Exception as ex:
+                embed = discord.Embed(title="Error",description=f"[!] Error while Using Item \nError : {ex}")
+                await message.channel.send(embed=embed)
+                return
 
             
 
@@ -347,6 +397,6 @@ sched = AsyncIOScheduler()
 sched.add_job(db_refresh, 'cron', hour=0)
 sched.start()
 
-client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.Jl6gr6DcwGxB30JEG7y6uW-I5vU")
+client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.RJkZ_87qM01P0WlcWRuk6DCz_60")
 # client.run(os.environ['discord-token'])
 

@@ -48,11 +48,11 @@ def showuserinfo(author):
         your point : {sql_result[0]['point']}
         your location : {sql_result[0]['map_location']}
         **- items**
-        {"STEP":20}|{item_dir['STEP']}
-        {"SNAKE":20}|{item_dir['SNAKE']}
-        {"STUN":20}|{item_dir['STUN']}
-        {"ASSASSIN":20}|{item_dir['ASSASSIN']}
-        {"REDEMPTION":20}|{item_dir['REDEMPTION']} 
+        STEP\t|{item_dir['STEP']}
+        SNAKE\t|{item_dir['SNAKE']}
+        STUN\t|{item_dir['STUN']}
+        ASSASSIN\t|{item_dir['ASSASSIN']}
+        REDEMPTION\t|{item_dir['REDEMPTION']} 
         
         **- BAEKJOON INFO**
         baekjoon id : {sql_result[0]['baekjoon_id']}
