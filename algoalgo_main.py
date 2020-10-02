@@ -397,6 +397,5 @@ sched = AsyncIOScheduler()
 sched.add_job(db_refresh, 'cron', hour=0)
 sched.start()
 
-client.run("NzQ0MTE0NTUyMDczMDkzMTgy.Xzegrg.RJkZ_87qM01P0WlcWRuk6DCz_60")
-# client.run(os.environ['discord-token'])
+client.run(os.environ['discord-token'])
 
