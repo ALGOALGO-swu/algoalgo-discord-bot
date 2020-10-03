@@ -10,6 +10,7 @@ import algoalgo_shop
 import algoalgo_item
 import algoalgo_map
 import algoalgo_error
+import algoalgo_step
 
 client = discord.Client()
 admin = 742625793276116992
@@ -22,7 +23,7 @@ async def on_ready():
     print("디스코드봇 ID:" + str(client.user.id))
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("로컬 테스트 중 "))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("GM on Board, w/ 알고리즘"))
 
 @client.event
 async def db_refresh():
@@ -165,6 +166,12 @@ async def on_message(message):
             else:
                 await message.channel.send("포인트가 부족합니다. 구매를 종료합니다")
 
+    #################################
+    # map 관련 명령어
+    # 담당자 : 20181113nn 박세란 
+    # 보조 : 2018111339 신유림
+    #################################
+
     #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
@@ -210,14 +217,135 @@ async def on_message(message):
         for i in range(len(message.author.roles)):
             await message.channel.send(embed=discord.Embed(title=f"""== {message.author}'s the roles INFO ==""", description = f""" the role #{i} :: {message.author.roles[i].name}\n the role #{i}'s' id :: {message.author.roles[i].id} """, color = 0x6b9560))
     
-
+    #################################
+    # step 관련 명령어               #
+    #################################
     #!step
     if message.content.startswith('!step'):
-        result, feature, daily = algoalgo_map.step(message.author)
-        # embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo, color = 0x6b9560)
-        await message.channel.send(result)
-        await message.channel.send(embed=embed)
+        try:
+            user_location = algoalgo_step.get_location(message.author)
 
+            # check step value. have to be > 0
+            step_value = algoalgo_step.check_items(message.author, "STEP")       
+            if step_value <= 0:
+                e_msg = "You have No STEP item. Please buy and try again."
+                raise algoalgo_error.UserDefinedException(e_msg)
+            
+            # check user status. status == 1
+            user_status = algoalgo_step.check_status(message.author)
+            if user_status != 1:
+                e_msg = ""
+                if user_status == 0:                    
+                    e_msg = "You are now LOCKED. Please solve problem to unlock your status.\nSTEP으로 진행을 하기 위해서는 알고리즘 문제를 풀어주세요."
+                elif user_status == -1:
+                    e_msg = "You are now STUNNED. Please wait.\n스턴은 하루가 지나면 풀립니다. 내일 다시 찾아와서 STEP 진행을 해주세요."
+                else:
+                    e_msg = "Your status is now unidentified. Please contact to staff.\n현재 status 값에 오류가 발생했습니다. 스탭에게 연락해주세요."
+                raise algoalgo_error.UserDefinedException(e_msg)
+
+            # check user's daily_step
+            daily_step = algoalgo_step.check_dailystep(message.author)
+            if daily_step >= 1:
+                e_msg = "You already use STEP twice per day. Please use later.\n이미 하루에 사용하실 수 있는 STEP을 모두 사용하셨습니다. 내일 다시 진행해주세요."
+                raise algoalgo_error.UserDefinedException(e_msg)
+
+            # check user location
+            if not 1 <= user_location <= 49:
+                e_msg = f"You can't use step anymore.\n이제 STEP을 사용하실 수 없습니다.\n현재 위치:{user_location}"
+                raise algoalgo_error.UserDefinedException(e_msg)
+
+
+            # update map location
+            update_result = algoalgo_step.update_location(message.author)
+            if update_result != 0:
+                e_msg = "Something went wrong while updating location...\n업데이트 중 오류가 발생했습니다. 다시 시도해주세요."
+                raise algoalgo_error.UserDefinedException(e_msg)
+
+            # check feature
+            # slider - 6->11
+            # snake  - 21->8
+            map_feature = algoalgo_step.check_feature(message.author)
+            
+            # split into features
+            # 0: normal
+            # 1: ladder
+            # 2: snake
+
+            info1 = "" #info about map_feature
+            info2 = "" #info about location 
+
+            if map_feature == 0:
+                info1 = "You stepped into NORMAL block."
+                
+            elif map_feature == 1:
+                info1 = "You stepped into ladder block."
+                algoalgo_step.ladder(message.author)
+            
+            elif map_feature == 2:
+                info1 = "You stepped into SNAKE block."
+                snake_value = algoalgo_step.check_items(message.author, "SNAKE")
+                if snake_value > 0:
+                    embed = discord.Embed(title="Snake!",description="Do you want to run?")
+                    embed.add_field(name='**사용법**',value='SNAKE 아이템을 사용하려면 Y를 입력해주세요. N을 입력하시면 뱀을 타고 내려갑니다.\nY, N을 제외한 값을 입력하시면 무조건 아이템을 사용하지 않습니다.',inline=False)
+                    embed.add_field(name='보유한 SNAKE 수',value=f"{snake_value} 개",inline=False)
+                    await message.channel.send(embed=embed)
+
+                    def use(mes): # 답장하는 사람이 메세지를 보낸 사람과 일치하는지 
+                        return mes.author == message.author and mes.channel == message.channel
+                    try:
+                        msg = await client.wait_for('message',timeout=15.0, check=use) 
+                    except asyncio.TimeoutError:
+                        e_msg = "**TIME OUT**\nCome again!\n입력 시간이 지났습니다. 처음부터 다시 진행해주세요."
+                        raise algoalgo_error.UserDefinedException(e_msg)
+
+                    else: # 사용자 입력값 검사
+                        if msg.content == "Y": 
+                            algoalgo_step.use_items(message.author, "SNAKE")
+                            embed = discord.Embed(title="성공!",description="뱀을 무사히 피했습니다!")
+                            await message.channel.send(embed=embed)
+
+                        else:
+                            algoalgo_map.snake(message.author)
+                            embed = None
+                            if msg.content == "N":
+                                embed = discord.Embed(title="이런!",description="뱀을 피하다가 발을 헛디뎌 밑으로 내려왔어요!")
+                            else:
+                                embed = discord.Embed(title="이런!",description="고민하다가 잘못 선택해서 밑으로 내려왔어요!")
+                            await message.channel.send(embed=embed)
+                else:
+                    algoalgo_map.snake(message.author)
+                    embed = discord.Embed(title="이런!",description="뱀을 잘못 밟아 미끄러지고 말았어요!")
+                    await message.channel.send(embed=embed)
+
+            elif map_feature == 3:
+                e_msg = "보스 칸에 도착하셨습니다.\n아직 보스 기능이 완성되지 않았습니다. 보스가 오픈된 이후에도 이 메세지를 보신다면 스텝에게 연락해주세요."
+                raise algoalgo_error.UserDefinedException(e_msg)
+            
+            else:
+                e_msg = "Feature is now unidentified. Please contact to staff.\n현재 feature 값에 오류가 발생했습니다. 스탭에게 연락해주세요."
+                raise algoalgo_error.UserDefinedException(e_msg)
+                
+            
+            # final : update status&daily_step into 0 and remove step item in list 
+            algoalgo_step.use_items(message.author, "STEP")
+            algoalgo_step.update_dailystep(message.author)
+            algoalgo_step.update_status(message.author)
+
+            # outputs
+            final_location = algoalgo_step.get_location(message.author)
+            info2 = f"Your Location : {final_location}"
+
+            embed = discord.Embed(title="STEP Complete",description=info1)
+            embed.add_field(name='**도착 위치**',value=info2)
+            await message.channel.send(embed=embed)
+
+
+        except Exception as ex:
+            # 에러가 발생하면 다시 location 원상복귀 
+            algoalgo_step.update_location_dst(message.author, user_location)
+            embed = discord.Embed(title="[!] STEP error",description=f"Error : {ex}")
+            await message.channel.send(embed=embed)
+            return
 
 
     #################################
@@ -238,7 +366,6 @@ async def on_message(message):
 
             item_msg = f"""```
 [idx] item_name | values
-[0] STEP        | {result['STEP']}
 [1] STUN        | {result['STUN']}
 [2] ASSASSIN    | {result['ASSASSIN']}
 [3] REDEMPTION  | {result['REDEMPTION']} ```"""
@@ -286,7 +413,7 @@ async def on_message(message):
                         e_msg = f"No User named '{user_atk}'"
                         raise algoalgo_error.UserDefinedException(e_msg)
                     
-                if user_res not in [0, 1, 2, 3]:
+                if not 1 <= user_res <= 3:
                     e_msg = "Invalid Item indicies"
                     raise algoalgo_error.UserDefinedException(e_msg)
                 
@@ -331,57 +458,7 @@ async def on_message(message):
                     await message.channel.send(result2)
                     return
 
-                # start STEP
-                if user_res2 == "STEP": 
-                    #성공
-                    result2, feature, daily = algoalgo_map.step(message.author)
-                    algoalgo_map.init_status(message.author)
-
-                    if feature == 2 : # 뱀
-                        if not result.get('SNAKE'):
-                            result['SNAKE']=0
-                        embed = discord.Embed(title="Snake!",description="do you want to run? ")
-                        embed.add_field(name='사용법',value='snake가 있을 시 YES를 입력해주세요',inline=False)
-                        embed.add_field(name='보유량',value=f"snake :{result['SNAKE']}",inline=False)
-
-                        def use(mes):
-                            return mes.author == message.author and mes.channel and channel
-                        try:
-                            msg = await client.wait_for('message',timeout=10.0, check=use) 
-                        except asyncio.TimeoutError:
-                            embed = discord.Embed(title="TIME OUT",description="oh you don't want it? oKay... BYE!")
-                            await message.channel.send(embed=embed)
-                            return
-                        else:
-                            # 사용자 입력값 검사
-                            if msg.content == "YES": 
-                                embed = discord.Embed(title="성공!",description="뱀을 무사히 피했습니다!")
-                                await message.channel.send(embed=embed)
-                                return
-
-                            else:
-                                embed = discord.Embed(title="이런!",description="뱀을 피하느라 밑으로 내려왔어요!")
-                                result2 = algoalgo_map.snake(message.author)
-                                await message.channel.send(result)
-                                return
-
-                    elif feature == 1: # 1이 사다리
-                        embed = discord.Embed(title="사다리 칸",description="축하해요 사다리 칸에 도착했네요")
-                        await message.channel.send(embed=embed)
-                        return
-                        
-
-                    elif feature == 0: # 0이 일반
-                        embed = discord.Embed(title="일반 칸",description="잘 도착했네요")
-                        await message.channel.send(embed=embed)
-                        return
-                    
-
-                    result2 = algoalgo_item.updateitem(str(message.author),"STEP;")
-                    await message.channel.send(result2)
-                    return
-                # end STEP
-
+                
                 embed = discord.Embed(title="Check your answer",description=f"this is not right type '{user_res2}'")
                 await message.channel.send(embed=embed)
                 return

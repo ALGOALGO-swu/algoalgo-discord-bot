@@ -53,13 +53,15 @@ def updateitem(author,item):
         sql_result2=sql_result[0]['items'].replace(item,"",1)
 
     except Exception as ex:
-        raise f"[!] error select '{str(author)}' DB"
+        e_msg = f"[!] error select '{str(author)}' DB"
+        raise algoalgo_error.UserDefinedException(e_msg)
 
     sql2 = f"update member set items ='{str(sql_result2)}' where discord_id='{str(author)}'"    
     try:
         algoalgo_sql.sql_update(sql2)
     except Exception as ex:
-        raise f"[!] error update '{str(author)}' DB"
+        e_msg = f"[!] error update '{str(author)}' DB"
+        raise algoalgo_error.UserDefinedException(e_msg)
     
     return f"[+] success use item '{author}', '{item}'" 
 
