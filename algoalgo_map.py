@@ -40,7 +40,6 @@ def getLocType(cmd):
 
     try:
         sql_result = algoalgo_sql.sql_exe(sql)
-        print(sql_result)
      
         if sql_result[0]['feature'] == 0 :
             LocFeatureInfo = "**NOMAL**🦶"
@@ -70,7 +69,6 @@ def getPlayers(cmd):
 
     try:
         sql_result = algoalgo_sql.sql_exe(sql)
-        print(sql_result)
         
         Locinfo = ""
 
@@ -84,14 +82,16 @@ def getPlayers(cmd):
 
 # player's loc 반환
 def showmap(author):
-    sql = f"select map_location, baekjoon_no from member where discord_id='{str(author)}'"
-
+    sql = f"select map_location from member where discord_id='{str(author)}'"
+    
     try:
         sql_result = algoalgo_sql.sql_exe(sql)
-     
-        Locinfo = [sql_result[0]['map_location'], sql_result[0]['baekjoon_no']]
-
-        return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
+        Locinfo = sql_result[0]['map_location']
+        sql_bj_no = f"select baekjoon_no from map where id= {Locinfo}"
+        sql_bj_result = algoalgo_sql.sql_exe(sql_bj_no)
+        bj_no = sql_bj_result[0]['baekjoon_no']
+        
+        return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo, bj_no
     except Exception as ex:
         return f"[!] An error occurs while finding **{author}** 's location on the map in db....\n[INFO] error : {ex}"
 

@@ -175,9 +175,9 @@ async def on_message(message):
     #player's location
     if message.content.startswith('!show_map'):
         await message.channel.send('Loading...Map..')
-        result, Locinfo = algoalgo_map.showmap(message.author)
-        bj_url = f"https://www.acmicpc.net/problem/{Locinfo[1]}"
-        embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo[0], color = 0x6b9560)
+        result, Locinfo, bj_no = algoalgo_map.showmap(message.author)
+        bj_url = f"https://www.acmicpc.net/problem/{bj_no}"
+        embed = discord.Embed(title = f"""== **{message.author}** 's location ==""", description=Locinfo, color = 0x6b9560)
         embed.add_field(name='**풀어야 할 문제**', value = bj_url, inline=False)
         
         await message.channel.send(result)
