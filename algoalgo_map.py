@@ -84,13 +84,12 @@ def getPlayers(cmd):
 
 # player's loc 반환
 def showmap(author):
-    sql = f"select map_location from member where discord_id='{str(author)}'"
+    sql = f"select map_location, baekjoon_no from member where discord_id='{str(author)}'"
 
     try:
         sql_result = algoalgo_sql.sql_exe(sql)
-        print(sql_result)
      
-        Locinfo = sql_result[0]['map_location']
+        Locinfo = [sql_result[0]['map_location'], sql_result[0]['baekjoon_no']]
 
         return f"[*] Successfully Inquires data about **{author}** 's location on the map", Locinfo
     except Exception as ex:
