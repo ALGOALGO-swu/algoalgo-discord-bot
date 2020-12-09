@@ -209,7 +209,7 @@ def problem_rank_update():
 def get_solved(bojid):
     soup = BeautifulSoup(requests.get(f'https://www.acmicpc.net/user/{bojid}').text, 'html.parser')
     text = soup.select_one('div.panel-body')
-    solved = text.text.split('\n')[1:-1:2]
+    solved = text.text.split('\n')[1:-1]
     return solved
 
 
