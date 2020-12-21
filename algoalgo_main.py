@@ -11,6 +11,7 @@ import algoalgo_item
 import algoalgo_map
 import algoalgo_error
 import algoalgo_step
+import algoalgo_boss
 
 client = discord.Client()
 admin = 742625793276116992
@@ -23,7 +24,7 @@ async def on_ready():
     print("디스코드봇 ID:" + str(client.user.id))
     print("디스코드봇 버전:" + str(discord.__version__))
     print('------')
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("GM on Board, w/ 알고리즘"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("로컬 테스트...."))
 
 @client.event
 async def db_refresh():
@@ -166,7 +167,27 @@ async def on_message(message):
             else:
                 await message.channel.send("포인트가 부족합니다. 구매를 종료합니다")
 
+    
     #################################
+    # boss 관련 명령어               #
+    # 담당자 : 2018111339 신유림     #
+    #################################
+    if message.content.startswith('!atk_boss'):
+        atk_result = algoalgo_boss.attackBoss(str(message.author), message.content)
+        embed = discord.Embed(title = f"""== 보스 공격 여부 ==""", description=atk_result, color = 0x6b9560)
+        await message.channel.send(embed=embed)
+
+
+    if message.content.startswith('!boss'):
+        curr_life = algoalgo_boss.getBossLife()
+        embed = discord.Embed(title = f"""== 보스 남은 체력 ==""", description=curr_life, color = 0x6b9560)
+        
+        await message.channel.send(embed=embed)
+    
+    
+
+    
+    ################################
     # map 관련 명령어
     # 담당자 : 20181113nn 박세란 
     # 보조 : 2018111339 신유림
@@ -470,7 +491,7 @@ async def on_message(message):
                 await message.channel.send(embed=embed)
                 return
 
-            
+           
 
 
 sched = AsyncIOScheduler()

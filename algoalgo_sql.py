@@ -55,7 +55,7 @@ def sql_exe(query, *args):
         db='algoalgo', 
         charset='utf8'
     )
-    
+
     cursor = db_conn.cursor(pymysql.cursors.DictCursor)
     try:
         cursor.execute(query, args)

@@ -280,9 +280,10 @@ def daily_baekjoon(author, cmd):
     except Exception as ex:
         return f"[!] An error occurs while check db....\n[INFO] error : {ex}"
 
-    # 이미 인증된 문제
     if solvedlist == None:
         solvedlist = ""
+
+    # 이미 인증된 문제
     if pid in solvedlist.split(';')[:-1]:
         return "[!] Already Registered Problem"
 
